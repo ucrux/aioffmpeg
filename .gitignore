@@ -1,0 +1,13 @@
+*.pyc
+venv/
+.idea
+.idea/*
+*.log
+*.log.mbtree
+.pytest_cache
+.pytest_cache/* 
+build/*
+dist/*
+__pycache__
+aioffmpeg.egg-info
+.DS_Store

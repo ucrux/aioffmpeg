@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.2.2/alt/video-js-cdn.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.2.2/video.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.2.2/lang/zh-CN.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-hotkeys/0.2.20/videojs.hotkeys.min.js"></script>
+
+</head>
+<body>
+
+
+<div style="width:800px;">
+	<video id="video-hls" class="video-js vjs-default-skin vjs-16-9" preload="auto"	poster="/previews/012518_637/preview2b.png">
+		<source src="/hls/012518_637/012518_637.m3u8" type="application/x-mpegURL" />
+	</video>
+</div>
+
+<div style="width:800px;">
+	<video id="video-hls2" class="video-js vjs-default-skin vjs-16-9" preload="auto"	poster="/previews/020318_641/preview0b.png">
+		<source src="/hls/020318_641/020318_641.m3u8" type="application/x-mpegURL" />
+	</video>
+</div>
+
+<div style="width:800px;">
+	<video id="video-hls3" class="video-js vjs-default-skin vjs-16-9" preload="auto"	poster="/previews/BBAN-153/preview1b.png">
+		<source src="/hls/BBAN-153/BBAN-153.m3u8" type="application/x-mpegURL" />
+	</video>
+</div>
+
+<script>
+$(function (){
+	var player = videojs('video-hls', {
+		'techOrder': ["html5"],
+		'controls': true,
+		'fluid': true,
+
+
+	},function (){
+		var player = this;
+		player.hotkeys({
+			volumeStep: 0.1,
+			seekStep: 5,
+			enableModifiersForNumbers: false
+		});
+
+	});
+
+	var player = videojs('video-hls2', {
+		'techOrder': ["html5"],
+		'controls': true,
+		'fluid': true,
+
+
+	},function (){
+		var player = this;
+		player.hotkeys({
+			volumeStep: 0.1,
+			seekStep: 5,
+			enableModifiersForNumbers: false
+		});
+
+	});
+
+	var player = videojs('video-hls3', {
+		'techOrder': ["html5"],
+		'controls': true,
+		'fluid': true,
+
+
+	},function (){
+		var player = this;
+		player.hotkeys({
+			volumeStep: 0.1,
+			seekStep: 5,
+			enableModifiersForNumbers: false
+		});
+
+	});
+
+
+
+});
+
+</script>
+
+
+<body>
+</html>
