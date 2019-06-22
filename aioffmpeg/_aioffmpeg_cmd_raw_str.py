@@ -231,9 +231,9 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"-level {level:s} -b:v {video_rate:d}k " \
                 r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
                 r"-hls_flags independent_segments{fix_ts_time}+" \
-                r"second_level_segment_index+second_level_segment_duration " \
+                r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
-                r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%018d.ts" ' \
+                r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                 r"/dev/null && " \
                 r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                 r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
@@ -243,9 +243,9 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"-level {level:s} -b:v {video_rate:d}k " \
                 r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
                 r"-hls_flags independent_segments{fix_ts_time}+" \
-                r"second_level_segment_index+second_level_segment_duration " \
+                r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
-                r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%018d.ts" ' \
+                r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                 r"'{output_file:s}'"
 # HLS 切片命令 另外一种
 CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
@@ -255,9 +255,9 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-level {level:s} -b:v {video_rate:d}k " \
                       r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
                       r"-use_localtime 1 -hls_flags " \
-                      r"second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
+                      r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
                       r"-strftime 1 " \
-                      r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%018d.ts" ' \
+                      r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                       r"{prefix:s}.m3u8 && " \
                       r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                       r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
@@ -267,9 +267,9 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-level {level:s} -b:v {video_rate:d}k " \
                       r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
                       r"-use_localtime 1 -hls_flags " \
-                      r"second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
+                      r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
                       r"-strftime 1 " \
-                      r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%018d.ts" ' \
+                      r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                       r"'{output_file:s}'"
 # 截图命令,截取以帧做为图片
 CMD_SNAPSHOT = r"'{ffmpeg_bin:s}' -ss {start_time:f} -i '{input_file:s}' -passlogfile {prefix} -threads 0 " \
