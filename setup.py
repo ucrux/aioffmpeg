@@ -18,10 +18,10 @@ setup(name='aioffmpeg',
             'Development Status :: 3 - Alpha',
             # 开发的目标用户
             'Intended Audience :: Developers',
-            'Operating System :: linux',
+            'Operating System :: POSIX',
             # 目标 Python 版本
             'Programming Language :: Python :: 3.7',
-            'Topic :: video :: ffmpeg'
+            'Topic :: Software Development :: Bug Tracking',
       ],
       packages=find_packages('aioffmpeg'),
       package_dir = {'':'aioffmpeg'},
