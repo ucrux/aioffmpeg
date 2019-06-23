@@ -483,18 +483,37 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
         if args_dict is None:
             return None, None
         # 将两个视频的格式统一
-        input_obj1, _ = await cls_obj.cmd_do_aio(None, 'mp4', FfmpegCmdModel.scale_video,
-                                                 auto_clear=True,
-                                                 encode_lib=args_dict['encode_lib'],
-                                                 target_videobitrate=args_dict['video_rate'],
-                                                 v_frame=args_dict['frame'])
-        input_obj2, _ = await input_obj.cmd_do_aio(None, 'mp4', FfmpegCmdModel.scale_video,
-                                                   auto_clear=True,
-                                                   target_width=cls_obj.video_width,
-                                                   target_height=cls_obj.video_height,
-                                                   encode_lib=args_dict['encode_lib'],
-                                                   target_videobitrate=args_dict['video_rate'],
-                                                   v_frame=args_dict['frame'])
+        # 如果使用的CPU编码,可以同时进行
+        if args_dict['encode_lib'] == H264EncoderArgs.codec_v_libx264:
+            (input_obj1, _), (input_obj2, _) = await asyncio.gather(
+                                                         cls_obj.cmd_do_aio(None, 'mp4', 
+                                                                            FfmpegCmdModel.scale_video,
+                                                                            auto_clear=True,
+                                                                            encode_lib=args_dict['encode_lib'],
+                                                                            target_videobitrate=args_dict['video_rate'],
+                                                                            v_frame=args_dict['frame']),
+                                                         input_obj.cmd_do_aio(None, 'mp4', 
+                                                                              FfmpegCmdModel.scale_video,
+                                                                              auto_clear=True,
+                                                                              target_width=cls_obj.video_width,
+                                                                              target_height=cls_obj.video_height,
+                                                                              encode_lib=args_dict['encode_lib'],
+                                                                              target_videobitrate=args_dict['video_rate'],
+                                                                              v_frame=args_dict['frame'])
+                                                      )
+        else:
+            input_obj1, _ = await cls_obj.cmd_do_aio(None, 'mp4', FfmpegCmdModel.scale_video,
+                                                     auto_clear=True,
+                                                     encode_lib=args_dict['encode_lib'],
+                                                     target_videobitrate=args_dict['video_rate'],
+                                                     v_frame=args_dict['frame'])
+            input_obj2, _ = await input_obj.cmd_do_aio(None, 'mp4', FfmpegCmdModel.scale_video,
+                                                       auto_clear=True,
+                                                       target_width=cls_obj.video_width,
+                                                       target_height=cls_obj.video_height,
+                                                       encode_lib=args_dict['encode_lib'],
+                                                       target_videobitrate=args_dict['video_rate'],
+                                                       v_frame=args_dict['frame'])
         if not all([input_obj1, input_obj2]):
             return None, None
         args_dict['input_file1'] = input_obj1.videofile_path
