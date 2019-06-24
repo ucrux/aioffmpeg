@@ -1,5 +1,5 @@
 import constval
-from h264video import H264Video
+from aioffmpeg.h264video import H264Video
 
 import pytest
 import os

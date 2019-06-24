@@ -1,6 +1,6 @@
 import constval
-from h264video import H264Video
-from aioffmpeg_cmd_opts import H264EncoderArgs, FfmpegCmdModel
+from aioffmpeg.h264video import H264Video
+from aioffmpeg.cmd_opts import H264EncoderArgs, FfmpegCmdModel
 
 import pytest
 import os
@@ -16,9 +16,12 @@ async def test_logo_video_aio():
     h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
-    ratio_img_height = random.random()
-    img_position_x = random.randint(0, 1000)
-    img_position_y = random.randint(0, 2000)
+    ratio_img_height = 0.981555
+    img_position_x=412
+    img_position_y=1662
+    #ratio_img_height = random.random()
+    #img_position_x = random.randint(0, 1000)
+    #img_position_y = random.randint(0, 2000)
     print(f'ratio_img_height:{ratio_img_height:f}, '
           f'img_position_x={img_position_x:d}, img_position_y={img_position_y:d}')
     # 固定水印
@@ -44,7 +47,7 @@ async def test_logo_video_aio():
     print(f'out put video width:{fix_video_move.video_width:d},video height:{fix_video_move.video_height:d},'
           f'video bit rate:{fix_video_move.video_bitrate:d}')
 
-
+'''
 def test_logo_video():
     """
     测试视频缩放
@@ -81,3 +84,4 @@ def test_logo_video():
     print('H264Video object info:', fix_video_move)
     print(f'out put video width:{fix_video_move.video_width:d},video height:{fix_video_move.video_height:d},'
           f'video bit rate:{fix_video_move.video_bitrate:d}')
+'''

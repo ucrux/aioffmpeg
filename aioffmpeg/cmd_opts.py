@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from _aioffmpeg_cmd_raw_str import *
+from aioffmpeg._cmd_raw_str import *
 
 # h264编码参数选项
 class H264EncoderArgs():

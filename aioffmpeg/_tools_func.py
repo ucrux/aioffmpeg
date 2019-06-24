@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-from aioffmpeg_tools_func import *
-from aioffmpeg_cmd_opts import *
+from aioffmpeg.tools_func import *
+from aioffmpeg.cmd_opts import *
 
 import os
 import time
@@ -281,6 +281,10 @@ def _cmd_tools_log_video(cls_obj, args_dict, img_position_x, img_position_y,
         # 求出图片的目标高度
         target_img_height = cls_obj.video_height * ratio_img_height
         target_img_width = target_img_height * (input_img_width / input_img_height)
+        if target_img_width > cls_obj.video_width:
+            # 竟然还有这么邪们的情况,从新计算图片目标宽高
+            target_img_width = cls_obj.video_width - 1
+            target_img_height = target_img_width * (input_img_height / input_img_width)
         # 水印基础信息,固定水印用
         args_dict['X'] = int(img_position_x if img_position_x + target_img_width <= cls_obj.video_width else
                              (cls_obj.video_width - target_img_width))

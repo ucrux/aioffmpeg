@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from aioffmpeg_cmd_opts import *
-from _aioffmpeg_tools_func import _ffmpeg_do_cmd, _create_command, _create_command_aio
-from aioffmpeg_tools_func import *
+from aioffmpeg.cmd_opts import *
+from aioffmpeg._tools_func import _ffmpeg_do_cmd, _create_command, _create_command_aio
+from aioffmpeg.tools_func import *
 
 import os
 import json

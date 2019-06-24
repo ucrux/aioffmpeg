@@ -1,4 +1,4 @@
-from aioffmpeg_cmd_opts import H264EncoderArgs
+from aioffmpeg.cmd_opts import H264EncoderArgs
 
 VIDEO = 'video.mp4'
 VIDEO1 = 'video1.mp4'

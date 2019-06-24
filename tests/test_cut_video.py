@@ -1,6 +1,6 @@
 import constval
-from h264video import H264Video
-from aioffmpeg_cmd_opts import H264EncoderArgs, FfmpegCmdModel
+from aioffmpeg.h264video import H264Video
+from aioffmpeg.cmd_opts import H264EncoderArgs, FfmpegCmdModel
 
 import pytest
 import os
