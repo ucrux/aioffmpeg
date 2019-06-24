@@ -69,9 +69,9 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                     if _cmd2 is not None:
                         status, _, stderr = await run_cmd(_cmd2)
                         if status != 0:
-                            return None, f'{_cmd2:s}\n{stderr:s}'
+                            return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
                     else:
-                        return None, f'{_cmd1:s}\n{stderr:s}'
+                        return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
@@ -97,9 +97,9 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                     if _cmd2 is not None:
                         status, _, stderr = simple_run_cmd(_cmd2)
                         if status != 0:
-                            return None, f'{_cmd2:s}\n{stderr:s}'
+                            return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
                     else:
-                        return None, f'{_cmd1:s}\n{stderr:s}'
+                        return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
