@@ -14,8 +14,8 @@ python setup.py install
 
 ## 初始化
 ```python
-from h264video import H264Video
-from aioffmpeg_cmd_opts import H264EncoderArgs, FfmpegCmdModel
+from aioffmpeg.h264video import H264Video
+from aioffmpeg.cmd_opts import H264EncoderArgs, FfmpegCmdModel
 
 h264_obj = H264Video(video_file, output_dir, ffmpeg_bin, 
                      ffprobe_bin, aio=True, auto_clear=False)
