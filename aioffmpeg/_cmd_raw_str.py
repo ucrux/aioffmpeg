@@ -201,31 +201,31 @@ OPTS_PAD_LR = r",pad={target_width:d}:{target_height:d}:({target_width:d}-iw)/2:
 OPTS_PAD_UD = r",pad={target_width:d}:{target_height:d}:0:({target_height:d}-ih)/2:black"
 # 缩放填充命令
 CMD_SCALE_VIDEO_CODECS = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-                         r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+                         r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                          r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}" ' \
                          r"-r {frame:d}  -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k /dev/null && " \
                          r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                          r"-c:v {encode_lib:s}  -c:a aac -b:a {audio_rate:d}k -pass 2 " \
-                         r"-f mp4 -movflags +faststart -passlogfile {prefix} " \
+                         r"-f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                          r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}" ' \
                          r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k '{output_file:s}'"
 # 视频旋转命令,支持视频的左旋和右旋
 CMD_ROTATE_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-                   r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+                   r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                    r"-vf 'format=yuv420p,transpose={rotate_direct:d}' -g {frame:d} " \
                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k /dev/null && " \
                    r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                    r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 -f mp4 " \
-                   r"-movflags +faststart -passlogfile {prefix} " \
+                   r"-movflags +faststart -passlogfile {prefix:s} " \
                    r"-vf 'format=yuv420p,transpose={rotate_direct:d}' -g {frame:d} " \
                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
 # HLS 切片命令
 CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-                r"-c:v {encode_lib:s} -pass 1 -an -f hls -movflags +faststart -passlogfile {prefix} " \
+                r"-c:v {encode_lib:s} -pass 1 -an -f hls -movflags +faststart -passlogfile {prefix:s} " \
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
@@ -233,11 +233,11 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"-hls_flags independent_segments{fix_ts_time}+" \
                 r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
-                r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
+                r'-hls_segment_filename "{prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                 r"/dev/null && " \
                 r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                 r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
-                r"-f hls -movflags +faststart -passlogfile {prefix} " \
+                r"-f hls -movflags +faststart -passlogfile {prefix:s} " \
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
@@ -249,7 +249,7 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"'{output_file:s}'"
 # HLS 切片命令 另外一种
 CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-                      r"-c:v {encode_lib:s} -pass 1 -an -f hls -movflags +faststart -passlogfile {prefix} " \
+                      r"-c:v {encode_lib:s} -pass 1 -an -f hls -movflags +faststart -passlogfile {prefix:s} " \
                       r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                       r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                       r"-level {level:s} -b:v {video_rate:d}k " \
@@ -257,11 +257,11 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-use_localtime 1 -hls_flags " \
                       r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
                       r"-strftime 1 " \
-                      r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
+                      r'-hls_segment_filename "{prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                       r"{prefix:s}.m3u8 && " \
                       r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                       r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
-                      r"-f hls -movflags +faststart -passlogfile {prefix} " \
+                      r"-f hls -movflags +faststart -passlogfile {prefix:s} " \
                       r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                       r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                       r"-level {level:s} -b:v {video_rate:d}k " \
@@ -272,14 +272,14 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                       r"'{output_file:s}'"
 # 截图命令,截取以帧做为图片
-CMD_SNAPSHOT = r"'{ffmpeg_bin:s}' -ss {start_time:f} -i '{input_file:s}' -passlogfile {prefix} -threads 0 " \
+CMD_SNAPSHOT = r"'{ffmpeg_bin:s}' -ss {start_time:f} -i '{input_file:s}' -passlogfile {prefix:s} -threads 0 " \
                r"-vf 'scale=-2:{target_height:d}' -y -f image2 " \
                r"-vframes 1 '{output_file:s}'"
 
 # 视频裁剪命令
 CMD_CUT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_time:f}' " \
                 r"-i '{input_file:s}' -threads 0 " \
-                r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+                r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
@@ -287,7 +287,7 @@ CMD_CUT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_
                 r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_time:f}' " \
                 r"-i '{input_file:s}' -threads 0 " \
                 r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
-                r"-f mp4 -movflags +faststart -passlogfile {prefix} " \
+                r"-f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
@@ -298,13 +298,13 @@ CMD_CUT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_
 # 没有gpu转码的时候选用CMD_CONCAT_VIDEO_SAFE
 # CMD_CONCAT_VIDEO 能保证音轨同步, CMD_CONCAT_VIDEO_SAFE 拼接速度快
 CMD_CONCAT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file1:s}' -i '{input_file2:s}' " \
-                   r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+                   r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                    r"-filter_complex '[0:0] [0:1] [1:0] [1:1] concat=n=2:v=1:a=1 [v] [a]' -map '[v]' -map '[a]' " \
                    r" -g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k /dev/null && " \
                    r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file1:s}' -i '{input_file2:s}' " \
                    r"-threads 0 -c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 -f mp4 " \
-                   r"-movflags +faststart -passlogfile {prefix} " \
+                   r"-movflags +faststart -passlogfile {prefix:s} " \
                    r"-filter_complex '[0:0] [0:1] [1:0] [1:1] concat=n=2:v=1:a=1 [v] [a]' -map '[v]' -map '[a]' " \
                    r"-g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
@@ -313,20 +313,20 @@ CMD_CONCAT_VIDEO_SAFE = r"'{ffmpeg_bin:s}' -f concat -safe 0 -i '{concat_file:s}
 # 水印命令
 # 固定水印
 CMD_LOGO_FIX = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{input_img:s}' " \
-               r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+               r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                r'-filter_complex "[1:v]scale=-2:{img_height:d}[ovrl],[0:v][ovrl]overlay={X:d}:{Y:d}" ' \
                r"-g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                r"-level {level:s} -b:v {video_rate:d}k /dev/null && " \
                r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{input_img:s}' " \
                r"-threads 0 -c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 -f mp4 " \
-               r"-movflags +faststart -passlogfile {prefix} " \
+               r"-movflags +faststart -passlogfile {prefix:s} " \
                r'-filter_complex "[1:v]scale=-2:{img_height:d}[ovrl],[0:v][ovrl]overlay={X:d}:{Y:d}" ' \
                r"-g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
 # 移动水印
 CMD_LOGO_MOVE = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{input_img:s}' " \
                 r"-i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' "\
-                r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+                r"-threads 0 -c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                 r'-filter_complex "[1]scale=-2:{img_height:d}[img1];'\
                 r"[0][img1]overlay=x='if(between(mod(t,{TT:d}),0,{ST:d}),{LX:d},NAN)':y={LY:d}[ovrl1]," \
                 r"[2]scale=-2:{img_height:d}[img2];"\
@@ -349,7 +349,7 @@ CMD_LOGO_MOVE = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{inpu
                 r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{input_img:s}' " \
                 r"-i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' -i '{input_img:s}' "\
                 r"-threads 0 -c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 -f mp4 "\
-                r'-movflags +faststart -passlogfile {prefix} -filter_complex "[1]scale=-2:{img_height:d}[img1];'\
+                r'-movflags +faststart -passlogfile {prefix:s} -filter_complex "[1]scale=-2:{img_height:d}[img1];'\
                 r"[0][img1]overlay=x='if(between(mod(t,{TT:d}),0,{ST:d}),{LX:d},NAN)':y={LY:d}[ovrl1]," \
                 r"[2]scale=-2:{img_height:d}[img2];"\
                 r"[ovrl1][img2]overlay=x='if(between(mod(t,{TT:d}),{ST:d},{ST:d}+2)," \
@@ -373,13 +373,13 @@ CMD_LOGO_MOVE = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -i '{inpu
 OPTS_DEL_LOGO = r"delogo=x={X:d}:y={Y:d}:w={width:d}:h={height:d}:enable='between(t,{begin_time:d},{end_time:d})'"
 # 去除水印命令
 CMD_DEL_LOGO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-               r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix} " \
+               r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                r'-vf "format=yuv420p{opts_del_log:s}" ' \
                r"-r {frame:d}  -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k /dev/null && " \
                r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                r"-c:v {encode_lib:s}  -c:a aac -b:a {audio_rate:d}k -pass 2 " \
-               r"-f mp4 -movflags +faststart -passlogfile {prefix} " \
+               r"-f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                r'-vf "format=yuv420p{opts_del_log:s}" ' \
                r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k '{output_file:s}'"
