@@ -71,9 +71,15 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                     if _cmd2 is not None:
                         status, _, stderr = await run_cmd(_cmd2)
                         if status != 0:
-                            return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
+                            #return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
+                            err_dict = {r'command': f'{_cmd2:s}', r'stderr': f'{stderr:s}'}
+                            err_dict_str = json.dumps(err_dict)
+                            return None, err_dict_str
                     else:
-                        return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
+                        #return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
+                        err_dict = {r'command': f'{_cmd1:s}', r'stderr': f'{stderr:s}'}
+                        err_dict_str = json.dumps(err_dict)
+                        return None, err_dict_str
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
@@ -99,9 +105,15 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                     if _cmd2 is not None:
                         status, _, stderr = simple_run_cmd(_cmd2)
                         if status != 0:
-                            return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
+                            #return None, f'{"command":"{_cmd2:s}", "stderr":"{stderr:s}"}'
+                            err_dict = {r'command': f'{_cmd2:s}', r'stderr': f'{stderr:s}'}
+                            err_dict_str = json.dumps(err_dict)
+                            return None, err_dict_str
                     else:
-                        return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
+                        #return None, f'{"command":"{_cmd1:s}", "stderr":"{stderr:s}"}'
+                        err_dict = {r'command': f'{_cmd1:s}', r'stderr': f'{stderr:s}'}
+                        err_dict_str = json.dumps(err_dict)
+                        return None, err_dict_str
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
