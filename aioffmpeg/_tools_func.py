@@ -8,7 +8,6 @@ import time
 from functools import wraps
 import random
 import json
-import aiofiles
 import uuid
 
 
@@ -32,7 +31,7 @@ def _mk_outputfile_and_ffmpeg2passprefix(cls_obj, output_dir: str,
     if not os.path.isdir(output_dir):
         return None, None
     # 目标文件路径
-    ori_file_name = '.'.join(os.path.split(origin_file_path)[1].split('.')[:-1])
+    #ori_file_name = '.'.join(os.path.split(origin_file_path)[1].split('.')[:-1])
     #output_file = output_dir + '/' + ori_file_name + str(time.time()) + '.' + file_extensions
     output_file = output_dir + '/' + str(uuid.uuid1()) + '.' + file_extensions
     # 2步编码的日志文件前缀
@@ -539,8 +538,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
         concat_file = prefix + str(time.time()) + str(random.random()) + '.txt'
         try:
             concat_str = f"file '{args_dict['input_file1']:s}'\nfile '{args_dict['input_file2']:s}'\n"
-            async with aiofiles.open(concat_file, mode='w') as f:
-                await f.write(concat_str)
+            with open(concat_file, 'w') as f:
+                f.write(concat_str)
         except (PermissionError, IOError, ValueError):
             concat_file = None
         # 如果是视频拼接,第二种拼接方式命令生成

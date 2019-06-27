@@ -9,6 +9,7 @@ import os
 import json
 import time
 import numbers
+import random
 from collections import namedtuple
 
 
@@ -362,7 +363,7 @@ class H264Video:
         except (AssertionError, IndexError, KeyError, TypeError):
             # raise
             raise TypeError(f'{self._video_file:s} format error, json -> \n {stdout:s}')
-        self._prefix_2pass = '/tmp/ffmpeg2pass.' + str(time.time())
+        self._prefix_2pass = '/tmp/ffmpeg2pass.' + str(time.time()) + str(random.random())
         # 各种视频处理函数,通过命令模版去对视频进行不同的处理
         if self.aio:
             self.cmd_do_aio = _ffmpeg_do_cmd(self, is_aio=True)(_create_command_aio)

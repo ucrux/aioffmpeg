@@ -8,7 +8,7 @@ setup(name='aioffmpeg',
       author_email='wanglz@ucrux.com',
       url='https://github.com/ucrux/aioffmpeg.git',
       license='MIT',
-      install_requires=['aiofiles>=0.4.0'],
+      #install_requires=['aiofiles>=0.4.0'],
       python_requires='>= 3.7',
       classifiers=[
             # 发展时期,常见的如下
