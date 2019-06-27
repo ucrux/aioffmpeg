@@ -9,6 +9,7 @@ from functools import wraps
 import random
 import json
 import aiofiles
+import uuid
 
 
 # 创建输出文件和2-pass ffmpeg encoder log prefix
@@ -32,7 +33,8 @@ def _mk_outputfile_and_ffmpeg2passprefix(cls_obj, output_dir: str,
         return None, None
     # 目标文件路径
     ori_file_name = '.'.join(os.path.split(origin_file_path)[1].split('.')[:-1])
-    output_file = output_dir + '/' + ori_file_name + str(time.time()) + '.' + file_extensions
+    #output_file = output_dir + '/' + ori_file_name + str(time.time()) + '.' + file_extensions
+    output_file = output_dir + '/' + str(uuid.uuid1()) + '.' + file_extensions
     # 2步编码的日志文件前缀
     prefix = cls_obj.prefix_2pass + str(time.time())
     return output_file, prefix
