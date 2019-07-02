@@ -129,9 +129,9 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
     :param delog_args: 去除水印参数的具名元祖,由create_delog_args产生
     :return: 返回去除水印选项的字符串
     """
-    if delog_args.pos_x > cls_obj.video_width or delog_args.pos_y > cls_obj.video_height or \
-        delog_args.width + delog_args.pos_x > cls_obj.video_width or \
-        delog_args.height + delog_args.pos_y > cls_obj.video_height or delog_args.end_time < delog_args.begin_time:
+    if delog_args.pos_x >= cls_obj.video_width or delog_args.pos_y >= cls_obj.video_height or \
+        delog_args.width + delog_args.pos_x >= cls_obj.video_width or \
+        delog_args.height + delog_args.pos_y >= cls_obj.video_height or delog_args.end_time <= delog_args.begin_time:
         return None
     opts = FfmpegOptsModel.del_log.format(
         X=delog_args.pos_x,
