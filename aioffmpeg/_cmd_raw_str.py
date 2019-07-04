@@ -210,7 +210,7 @@ CMD_SCALE_VIDEO_CODECS = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' 
                          r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                          r"-c:v {encode_lib:s}  -c:a aac -b:a {audio_rate:d}k -pass 2 " \
                          r"-f mp4 -movflags +faststart -passlogfile {prefix:s} " \
-                         r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}" ' \
+                         r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}{ass_options:s}" ' \
                          r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k '{output_file:s}'"
 # 视频旋转命令,支持视频的左旋和右旋
