@@ -146,7 +146,7 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
 
 def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                          input_img, output_file, target_width, target_height,
-                         v_frame, target_videobitrate, target_audiobitrate, start_time, last_time,
+                         v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
                          rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple):
     """
     命令创建工具函数,仅供内部使用,错误检查较少
@@ -179,6 +179,15 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     target_videobitrate = int(cls_obj.video_bitrate / 1000) if not target_videobitrate \
         else (target_videobitrate if target_videobitrate < (cls_obj.video_bitrate / 1000)
               else int(cls_obj.video_bitrate / 1000))
+    args_dict['ass_options'] = ''
+    if ass_file is not None:
+        try:
+            ass_file = os.path.abspath(ass_file)
+        except TypeError:
+            pass
+        else:
+            if os.path.isfile(ass_file):
+                args_dict['ass_options'] = OPTS_ASS.format(ass_file=ass_file)
     # 视频截图和裁剪
     # 时间大于1天的都安一天以内执行
     # 起始时间超过一天或者超过视频长度,直接截断
@@ -422,6 +431,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_23,
                               profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
                               level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2,
+                              # 字幕相关
+                              ass_file: str = None;
                               # 旋转视频方向参
                               rotate_direct: 'H264EncoderArgs' = H264EncoderArgs.v_left_rotate,
                               # hls相关
@@ -456,6 +467,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param crf_num: Constant Rate Factor 值
     :param profile_type: 编码配置文件
     :param level: 编码级别
+    # 字幕相关
+    :param ass_file: 字幕文件
     # 旋转视频方向参数
     :param rotate_direct: 视频旋转方向
     # hls相关
@@ -478,7 +491,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, target_videobitrate, target_audiobitrate, start_time, last_time,
+                                     v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
         return None, None
@@ -602,6 +615,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_23,
                     profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
                     level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2,
+                    # 字幕相关
+                    ass_file: str = None,
                     # 旋转视频方向参
                     rotate_direct: 'H264EncoderArgs' = H264EncoderArgs.v_left_rotate,
                     # hls相关
@@ -636,6 +651,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     :param crf_num: Constant Rate Factor 值
     :param profile_type: 编码配置文件
     :param level: 编码级别
+    # 字幕相关
+    :param ass_file: 字幕文件
     # 旋转视频方向参数
     :param rotate_direct: 视频旋转方向
     # hls相关
@@ -658,7 +675,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, target_videobitrate, target_audiobitrate, start_time, last_time,
+                                     v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
         return None, None

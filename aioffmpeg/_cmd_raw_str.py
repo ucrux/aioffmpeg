@@ -199,10 +199,12 @@ CMD_GET_VIDEO_PROBE = r"'{ffprobe_bin:s}' -v quiet -print_format json -show_form
 OPTS_PAD_LR = r",pad={target_width:d}:{target_height:d}:({target_width:d}-iw)/2:0:black"
 # 上下填充的参数
 OPTS_PAD_UD = r",pad={target_width:d}:{target_height:d}:0:({target_height:d}-ih)/2:black"
-# 缩放填充命令
+# ASS字幕参数
+OPTS_ASS = r",ass='{ass_file:s}'"
+# 缩放填充添加ASS字幕命令
 CMD_SCALE_VIDEO_CODECS = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                          r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
-                         r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}" ' \
+                         r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}{ass_options:s}" ' \
                          r"-r {frame:d}  -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k /dev/null && " \
                          r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
