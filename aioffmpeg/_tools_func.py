@@ -432,7 +432,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
                               level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2,
                               # 字幕相关
-                              ass_file: str = None;
+                              ass_file: str = None,
                               # 旋转视频方向参
                               rotate_direct: 'H264EncoderArgs' = H264EncoderArgs.v_left_rotate,
                               # hls相关
