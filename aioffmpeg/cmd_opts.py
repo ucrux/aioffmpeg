@@ -154,7 +154,7 @@ class H264EncoderArgs():
 class FfmpegCmdModel:
     check_h264 = CMD_CHECK_H264
     get_video_probe = CMD_GET_VIDEO_PROBE
-    ch_video_matedata = CMD_CH_VIDEO_METADATA
+    ch_video_metadata = CMD_CH_VIDEO_METADATA
     scale_video = CMD_SCALE_VIDEO_CODECS
     rotate_video = CMD_ROTATE_VIDEO
     hls_video = CMD_HLS_VIDEO

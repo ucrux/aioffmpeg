@@ -146,7 +146,7 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
 
 def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                          input_img, output_file, target_width, target_height,
-                         v_frame, matedata_dict, target_videobitrate, 
+                         v_frame, metadata_dict, target_videobitrate, 
                          target_audiobitrate, ass_file, start_time, last_time,
                          rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple):
     """
@@ -178,9 +178,9 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     v_frame = v_frame if v_frame < cls_obj.video_avgframerate else cls_obj.video_avgframerate
     # 处理视频元数据字典
     args_dict['matedata_str'] = ''
-    if matedata_dict:
+    if metadata_dict:
         try:
-            for k, v in matedata_dict.items():
+            for k, v in metadata_dict.items():
             args_dict['matedata_str'] += FfmpegOptsModel.matedata.format(mate_k=k,mate_v=v)
         excepti AttributeError:
             args_dict['matedata_str'] = ''
@@ -435,7 +435,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_128,
                               v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
                               # 视频元数据修改
-                              matedata_dict: dict = None,
+                              metadata_dict: dict = None,
                               # 编码相关
                               encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_h264_nvenc,
                               preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
@@ -473,7 +473,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param target_audiobitrate: 输出音频目标码率
     :param v_frame: 输出视频目标帧率
     # 视频元数据修改
-    :param matedata_dict: 视频元数据字典,用于修改视频元数据
+    :param metadata_dict: 视频元数据字典,用于修改视频元数据
     # 编码相关
     :param encode_lib: h264编码使用的外部库
     :param preset_type: 编码速度参数
@@ -498,14 +498,14 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     # 删除图片水印相关
     delog_tuple: 删除水印是的参数元祖
     """
-    if cmd_model == FfmpegCmdModel.ch_video_matedata and not matedata_dict:
+    if cmd_model == FfmpegCmdModel.ch_video_metadata and not metadata_dict:
         return None, None
     cmd2 = None
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, matedata_dict, target_videobitrate, 
+                                     v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
@@ -625,7 +625,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_64,
                     v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
                     # 视频元数据修改
-                    matedata_dict: dict = None,
+                    metadata_dict: dict = None,
                     # 编码相关
                     encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_h264_nvenc,
                     preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
@@ -663,7 +663,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     :param target_audiobitrate: 输出音频目标码率
     :param v_frame: 输出视频目标帧率
     # 视频元数据修改
-    :param matedata_dict: 视频元数据字典,用于修改视频元数据
+    :param metadata_dict: 视频元数据字典,用于修改视频元数据
     # 编码相关
     :param encode_lib: h264编码使用的外部库
     :param preset_type: 编码速度参数
@@ -688,14 +688,14 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     # 删除图片水印相关
     delog_tuple: 删除水印是的参数元祖
     """
-    if cmd_model == FfmpegCmdModel.ch_video_matedata and not matedata_dict:
+    if cmd_model == FfmpegCmdModel.ch_video_metadata and not metadata_dict:
         return None, None
     cmd2 = None
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, matedata_dict, target_videobitrate, 
+                                     v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
