@@ -199,6 +199,10 @@ class H264Video:
         return self._video_height
 
     @property
+    def rotate(self):
+        return self._rotate
+
+    @property
     def video_pixfmt(self):
         return self._video_pixfmt
 
@@ -338,6 +342,11 @@ class H264Video:
             self._video_profile = videofile_probe['streams'][0]['profile']
             self._video_width = int(float(videofile_probe['streams'][0]['width']))
             self._video_height = int(float(videofile_probe['streams'][0]['height']))
+            # 视频旋转属性
+            try:
+                self._rotate = videofile_probe['streams'][0]['tags']['rotate']
+            except (KeyError,IndexError):
+                self._rotate = 0
             self._video_pixfmt = videofile_probe['streams'][0]['pix_fmt']
             self._video_avgframerate = int(float(videofile_probe['streams'][0]['avg_frame_rate'].split('/')[0])/
                                            float(videofile_probe['streams'][0]['avg_frame_rate'].split('/')[1]))

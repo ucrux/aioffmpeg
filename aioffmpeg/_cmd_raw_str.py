@@ -14,6 +14,13 @@ CMD_CHECK_H264 = r"'{ffmpeg_bin:s}' -hide_banner -encoders |grep -v libx264rgb| 
 # 获取视频属性,在stdout中输出视频信息的属性
 CMD_GET_VIDEO_PROBE = r"'{ffprobe_bin:s}' -v quiet -print_format json -show_format -show_streams '{input_file:s}'"
 
+
+# 修改视频元数据
+OPTS_MATEDATA = r"-metadata:s:v '{mate_k:s}'='{mate_v:s}' "
+CMD_CH_VIDEO_METADATA = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' " \
+                        r"{matedata_str:s} " \
+                        r"-c copy '{output_file:s}'"
+
 # 视频
 """
 命令输出如下:
@@ -388,8 +395,8 @@ CMD_DEL_LOGO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0
 # 生成GIF
 CMD_GIF_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_time:f}' " \
                 r"-i '{input_file:s}' -threads 0 -an -r {frame:d} " \
-                r"-vf 'fps={frame:d},scale=-2:{target_height:d}:flags=lanczos,palettegen' -y '{prefix:s}.png' && " \
+                r"-vf 'fps={frame:d},scale=-2:{target_height:d}:flags=lanczos,palettegen' '{prefix:s}.png' && " \
                 r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_time:f}' " \
                 r"-i '{input_file:s}' -i '{prefix:s}.png' -threads 0 -an -f gif -r {frame:d} " \
                 r"-lavfi 'fps={frame:d},scale=-2:{target_height:d}:flags=lanczos[x];[x][1:v]paletteuse' " \
-                r"-y '{output_file:s}'"
+                r"'{output_file:s}'"

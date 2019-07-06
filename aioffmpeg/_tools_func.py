@@ -146,7 +146,8 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
 
 def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                          input_img, output_file, target_width, target_height,
-                         v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
+                         v_frame, matedata_dict, target_videobitrate, 
+                         target_audiobitrate, ass_file, start_time, last_time,
                          rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple):
     """
     命令创建工具函数,仅供内部使用,错误检查较少
@@ -175,6 +176,14 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     target_height = int(int(target_height / 2) * 2)
     # 处理目标视频帧率,不超过原始视频帧率
     v_frame = v_frame if v_frame < cls_obj.video_avgframerate else cls_obj.video_avgframerate
+    # 处理视频元数据字典
+    args_dict['matedata_str'] = ''
+    if matedata_dict:
+        try:
+            for k, v in matedata_dict.items():
+            args_dict['matedata_str'] += FfmpegOptsModel.matedata.format(mate_k=k,mate_v=v)
+        excepti AttributeError:
+            args_dict['matedata_str'] = ''
     # 处理目标视频码率,不超过原始视频码率
     target_videobitrate = int(cls_obj.video_bitrate / 1000) if not target_videobitrate \
         else (target_videobitrate if target_videobitrate < (cls_obj.video_bitrate / 1000)
@@ -187,7 +196,7 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
             pass
         else:
             if os.path.isfile(ass_file):
-                args_dict['ass_options'] = OPTS_ASS.format(ass_file=ass_file)
+                args_dict['ass_options'] = FfmpegOptsModel.ass.format(ass_file=ass_file)
     # 视频截图和裁剪
     # 时间大于1天的都安一天以内执行
     # 起始时间超过一天或者超过视频长度,直接截断
@@ -425,6 +434,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               target_videobitrate: int = 0,
                               target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_128,
                               v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
+                              # 视频元数据修改
+                              matedata_dict: dict = None,
                               # 编码相关
                               encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_h264_nvenc,
                               preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
@@ -447,7 +458,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               img_position_x: float = 0.0,
                               img_position_y: float = 0.0,
                               # 删除图片水印相关
-                              delog_tuple: tuple = None) -> str:
+                              delog_tuple: tuple = None) -> tuple:
     """
     :param cls_obj: ffmpeg 相关对象
     :param output_file: 视频输出文件
@@ -461,6 +472,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param target_videobitrate: 输出视频目标码率
     :param target_audiobitrate: 输出音频目标码率
     :param v_frame: 输出视频目标帧率
+    # 视频元数据修改
+    :param matedata_dict: 视频元数据字典,用于修改视频元数据
     # 编码相关
     :param encode_lib: h264编码使用的外部库
     :param preset_type: 编码速度参数
@@ -485,13 +498,15 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     # 删除图片水印相关
     delog_tuple: 删除水印是的参数元祖
     """
-    args_dict = dict()
+    if cmd_model == FfmpegCmdModel.ch_video_matedata and not matedata_dict:
+        return None, None
     cmd2 = None
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
+                                     v_frame, matedata_dict, target_videobitrate, 
+                                     target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
         return None, None
@@ -609,6 +624,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     target_videobitrate: int = 0,
                     target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_64,
                     v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
+                    # 视频元数据修改
+                    matedata_dict: dict = None,
                     # 编码相关
                     encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_h264_nvenc,
                     preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
@@ -645,6 +662,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     :param target_videobitrate: 输出视频目标码率
     :param target_audiobitrate: 输出音频目标码率
     :param v_frame: 输出视频目标帧率
+    # 视频元数据修改
+    :param matedata_dict: 视频元数据字典,用于修改视频元数据
     # 编码相关
     :param encode_lib: h264编码使用的外部库
     :param preset_type: 编码速度参数
@@ -669,13 +688,15 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     # 删除图片水印相关
     delog_tuple: 删除水印是的参数元祖
     """
-    args_dict = dict()
+    if cmd_model == FfmpegCmdModel.ch_video_matedata and not matedata_dict:
+        return None, None
     cmd2 = None
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, target_videobitrate, target_audiobitrate, ass_file, start_time, last_time,
+                                     v_frame, matedata_dict, target_videobitrate, 
+                                     target_audiobitrate, ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
     if args_dict is None:
         return None, None
