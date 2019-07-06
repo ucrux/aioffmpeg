@@ -177,13 +177,13 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     # 处理目标视频帧率,不超过原始视频帧率
     v_frame = v_frame if v_frame < cls_obj.video_avgframerate else cls_obj.video_avgframerate
     # 处理视频元数据字典
-    args_dict['matedata_str'] = ''
+    args_dict['metadata_str'] = ''
     if metadata_dict:
         try:
             for k, v in metadata_dict.items():
-            args_dict['matedata_str'] += FfmpegOptsModel.matedata.format(mate_k=k,mate_v=v)
-        excepti AttributeError:
-            args_dict['matedata_str'] = ''
+                args_dict['metadata_str'] += FfmpegOptsModel.metadata.format(mate_k=k,mate_v=v)
+        except AttributeError:
+            args_dict['metadata_str'] = ''
     # 处理目标视频码率,不超过原始视频码率
     target_videobitrate = int(cls_obj.video_bitrate / 1000) if not target_videobitrate \
         else (target_videobitrate if target_videobitrate < (cls_obj.video_bitrate / 1000)

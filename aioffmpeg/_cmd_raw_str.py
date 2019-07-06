@@ -18,7 +18,7 @@ CMD_GET_VIDEO_PROBE = r"'{ffprobe_bin:s}' -v quiet -print_format json -show_form
 # 修改视频元数据
 OPTS_MATEDATA = r"-metadata:s:v '{mate_k:s}'='{mate_v:s}' "
 CMD_CH_VIDEO_METADATA = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' " \
-                        r"{matedata_str:s} " \
+                        r"{metadata_str:s} " \
                         r"-c copy '{output_file:s}'"
 
 # 视频

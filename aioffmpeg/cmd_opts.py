@@ -170,7 +170,7 @@ class FfmpegCmdModel:
 
 
 class FfmpegOptsModel:
-    matedata = OPTS_MATEDATA
+    metadata = OPTS_MATEDATA
     pad_left_right = OPTS_PAD_LR
     pad_up_down = OPTS_PAD_UD
     del_log = OPTS_DEL_LOGO
