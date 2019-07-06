@@ -501,6 +501,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     if cmd_model == FfmpegCmdModel.ch_video_metadata and not metadata_dict:
         return None, None
     cmd2 = None
+    args_dict = dict()
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
@@ -691,6 +692,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     if cmd_model == FfmpegCmdModel.ch_video_metadata and not metadata_dict:
         return None, None
     cmd2 = None
+    args_dict = dict()
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
     args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
