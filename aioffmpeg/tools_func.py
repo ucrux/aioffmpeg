@@ -17,8 +17,12 @@ def simple_run_cmd(cmd, timeout: int = 7200) -> 'status,stdout,stderr':
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
         stdout, stderr = proc.communicate(timeout=timeout)
-        stdout = stdout.decode('utf8')
-        stderr = stderr.decode('utf8')
+        try:
+            stdout = stdout.decode('utf8')
+            stderr = stderr.decode('utf8')
+        except UnicodeDecodeError:
+            stdout = 'UnicodeDecodeError'
+            stderr = 'UnicodeDecodeError'
     except TimeoutError:
         proc.terminate()
         status = -1
@@ -45,8 +49,12 @@ async def run_cmd(cmd: str) -> 'status,stdout,stderr':
         stderr=asyncio.subprocess.PIPE)
     # 不知道这里需不需要使用 try: pass; except: pass; 在官方文档上没有找到关于这个的 exception
     stdout, stderr = await proc.communicate()
-    stdout = stdout.decode('utf8')
-    stderr = stderr.decode('utf8')
+    try:
+        stdout = stdout.decode('utf8')
+        stderr = stderr.decode('utf8')
+    except UnicodeDecodeError:
+        stdout = 'UnicodeDecodeError'
+        stderr = 'UnicodeDecodeError'
     if proc.returncode != 0:
         stderr = f'execute {cmd:s} return {proc.returncode:d} and stderr -> {stderr:s}'
     return proc.returncode, stdout, stderr
