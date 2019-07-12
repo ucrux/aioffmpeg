@@ -1,11 +1,11 @@
 from setuptools import setup
 from setuptools import find_packages
 setup(name='aioffmpeg',
-      version='0.1.13',
+      version='0.1.14',
       description='a ffmpeg wrapped lib for asyncio',
       long_description='',
       author='ucrux',
-      author_email='wanglz@ucrux.com',
+      author_email='ucrux@none.com',
       url='https://github.com/ucrux/aioffmpeg.git',
       license='MIT',
       #install_requires=['aiofiles>=0.4.0'],
