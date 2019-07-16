@@ -175,4 +175,5 @@ class FfmpegOptsModel:
     pad_up_down = OPTS_PAD_UD
     del_log = OPTS_DEL_LOGO
     ass = OPTS_ASS
+    hls_enc_key_url = OPTS_HLS_ENC_KEY_URL
 

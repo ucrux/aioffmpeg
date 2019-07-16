@@ -232,13 +232,16 @@ CMD_ROTATE_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threa
                    r"-vf 'format=yuv420p,transpose={rotate_direct:d}' -g {frame:d} " \
                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
+# HLS 切片参数
+OPTS_HLS_ENC_KEY_URL = r'-hls_enc_key_url'
 # HLS 切片命令
 CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                 r"-c:v {encode_lib:s} -pass 1 -an -f hls -movflags +faststart -passlogfile {prefix:s} " \
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
-                r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
+                r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 -hls_enc {enc:d} " \
+                r"-hls_enc_key {enc_key:s} -hls_enc_iv {enc_iv:s} {hls_enc_key_url} " \
                 r"-hls_flags independent_segments{fix_ts_time}+" \
                 r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
@@ -250,7 +253,8 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
-                r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
+                r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 -hls_enc {enc:d} " \
+                r"-hls_enc_key {enc_key:s} -hls_enc_iv {enc_iv:s} {hls_enc_key_url} " \
                 r"-hls_flags independent_segments{fix_ts_time}+" \
                 r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
@@ -262,7 +266,8 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                       r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                       r"-level {level:s} -b:v {video_rate:d}k " \
-                      r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
+                      r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 -hls_enc {enc:d} " \
+                      r"-hls_enc_key {enc_key:s} -hls_enc_iv {enc_iv:s} {hls_enc_key_url} " \
                       r"-use_localtime 1 -hls_flags " \
                       r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
                       r"-strftime 1 " \
@@ -274,7 +279,8 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-vf 'format=yuv420p,scale=-2:{target_height:d}' -g {frame:d} " \
                       r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                       r"-level {level:s} -b:v {video_rate:d}k " \
-                      r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 " \
+                      r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 -hls_enc {enc:d} " \
+                      r"-hls_enc_key {enc_key:s} -hls_enc_iv {enc_iv:s} {hls_enc_key_url} " \
                       r"-use_localtime 1 -hls_flags " \
                       r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
                       r"-strftime 1 " \

@@ -148,12 +148,16 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
                          input_img, output_file, target_width, target_height,
                          v_frame, metadata_dict, target_videobitrate, 
                          target_audiobitrate, ass_file, start_time, last_time,
-                         rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple):
+                         rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple):
     """
     命令创建工具函数,仅供内部使用,错误检查较少
     创建基础信息参数字典,机不需要复杂处理的参数
     失败返回空值
     """
+    try:
+        args_dict['hls_enc_key_url'] = f'{FfmpegOptsModel.hls_enc_key_url:s} {hls_enc_key_url:s}' if hls_enc_key_url else ''
+    except (Exception,ValueError,TypeError):
+        return None
     args_dict['ffmpeg_bin'] = cls_obj._ffmpeg
     args_dict['prefix'] = prefix
     # 编码参数
@@ -228,6 +232,10 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     args_dict['ts_time'] = ts_time
     args_dict['fix_ts_time'] = fix_ts_time
     args_dict['ts_prefix'] = ts_prefix
+    args_dict['enc'] = 0 if hls_enc == 0 else 1
+    enc_key_seed = '0123456789abcdef'
+    args_dict['enc_key'] = ''.join([random.choice(enc_key_seed) for i in range(32)]) 
+    args_dict['enc_iv'] = ''.join([random.choice(enc_key_seed) for i in range(32)]) 
     # 删除水印参数
     delog_opts = ''
     if delog_tuple is not None:
@@ -450,6 +458,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               ts_time: int = 10,
                               fix_ts_time: 'H264EncoderArgs' = H264EncoderArgs.no_fix_ts_time,
                               ts_prefix: str = 'ts',
+                              hls_enc: int = 0,
+                              hls_enc_key_url: str = '',
                               # 截图,裁剪视频相关
                               start_time: float = 0,
                               last_time: float = 1,
@@ -488,6 +498,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param ts_time: ts切片时长
     :param fix_ts_time: 是否固定切片时长
     :param ts_prefix: ts 切片前缀名
+    :param hls_enc: ts切片是否加密
+    :param hls_enc_key_url: hls加密keyurl
     # 截图,裁剪视频相关
     :param start_time: 截图或裁剪视频起始时间
     :param last_time: 裁剪视频持续时间
@@ -508,7 +520,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                                      input_img, output_file, target_width, target_height,
                                      v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
-                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
+                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None
     # 视频缩放的特殊处理
@@ -641,6 +653,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     ts_time: int = 10,
                     fix_ts_time: 'H264EncoderArgs' = H264EncoderArgs.no_fix_ts_time,
                     ts_prefix: str = 'ts',
+                    hls_enc: int = 0,
+                    hls_enc_key_url: str = '',
                     # 截图,裁剪视频相关
                     start_time: float = 0,
                     last_time: float = 1,
@@ -679,6 +693,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     :param ts_time: ts切片时长
     :param fix_ts_time: 是否固定切片时长
     :param ts_prefix: ts 切片前缀名
+    :param hls_enc: ts切片是否加密
+    :param hls_enc_key_url: hls加密keyurl
     # 截图,裁剪视频相关
     :param start_time: 截图或裁剪视频起始时间
     :param last_time: 裁剪视频持续时间
@@ -699,7 +715,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                                      input_img, output_file, target_width, target_height,
                                      v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
-                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, delog_tuple)
+                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None
     # 视频缩放的特殊处理
