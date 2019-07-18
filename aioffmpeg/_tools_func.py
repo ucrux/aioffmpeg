@@ -79,6 +79,17 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                         err_dict = {r'command': f'{_cmd1:s}', r'stderr': f'{stderr:s}'}
                         err_dict_str = json.dumps(err_dict)
                         return None, err_dict_str
+                # HLS切片加密,需要特殊处理
+                if cmd_model == FfmpegCmdModel.hls_video and ('hls_enc' in kwargs.keys() and kwargs['hls_enc']):
+                    if ('hls_enc_key_url' in kwargs.keys() and not kwargs['hls_enc_key_url']) or \
+                        'hls_enc_key_url' not in kwargs.keys():
+                        # hls应用了加密,但是没有使用url key file,要对 m3u8文件进行处理
+                        _sed_cmd = f"sed -i '5s@/.*/@@g' '{output_file}'"
+                        status, _, stderr = await run_cmd(_sed_cmd)
+                        if status != 0:
+                            err_dict = {r'command': f'{_sed_cmd}', r'stderr': f'{stderr}'}
+                            err_dict_str = json.dumps(err_dict)
+                            return None, err_dict_str
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
@@ -113,6 +124,17 @@ def _ffmpeg_do_cmd(self, is_aio: bool = True):
                         err_dict = {r'command': f'{_cmd1:s}', r'stderr': f'{stderr:s}'}
                         err_dict_str = json.dumps(err_dict)
                         return None, err_dict_str
+                # HLS切片加密,需要特殊处理
+                if cmd_model == FfmpegCmdModel.hls_video and ('hls_enc' in kwargs.keys() and kwargs['hls_enc']):
+                    if ('hls_enc_key_url' in kwargs.keys() and not kwargs['hls_enc_key_url']) or \
+                        'hls_enc_key_url' not in kwargs.keys():
+                        # hls应用了加密,但是没有使用url key file,要对 m3u8文件进行处理
+                        _sed_cmd = f"sed -i '5s@/.*/@@g' '{output_file}'"
+                        status, _, stderr =  simple_run_cmd(_sed_cmd)
+                        if status != 0:
+                            err_dict = {r'command': f'{_sed_cmd}', r'stderr': f'{stderr}'}
+                            err_dict_str = json.dumps(err_dict)
+                            return None, err_dict_str
                 if file_extensions == 'mp4':
                     ret_obj = self.__class__(output_file, self.output_dir, self._ffmpeg,
                                              self._ffprobe, is_aio, auto_clear)
@@ -148,7 +170,7 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
                          input_img, output_file, target_width, target_height,
                          v_frame, metadata_dict, target_videobitrate, 
                          target_audiobitrate, ass_file, start_time, last_time,
-                         rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple):
+                         rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple):
     """
     命令创建工具函数,仅供内部使用,错误检查较少
     创建基础信息参数字典,机不需要复杂处理的参数
@@ -234,8 +256,20 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     args_dict['ts_prefix'] = ts_prefix
     args_dict['enc'] = 0 if hls_enc == 0 else 1
     enc_key_seed = '0123456789abcdef'
-    args_dict['enc_key'] = ''.join([random.choice(enc_key_seed) for i in range(32)]) 
+    if hls_enc_key is None:
+        if hls_enc_key_url:
+            # 如果hls加密key为空,但是加密key url不为空,则参数错误
+            return None
+        args_dict['enc_key'] = ''.join([random.choice(enc_key_seed) for i in range(32)]) 
+    else:
+        if len([ i for i in hls_enc_key if i not in enc_key_seed]) > 0 or len(hls_enc_key) != 16:
+            return None
+        else:
+            args_dict['enc_key'] = hls_enc_key
     args_dict['enc_iv'] = ''.join([random.choice(enc_key_seed) for i in range(32)]) 
+    # debug
+    # print(f"enc_key: {args_dict['enc_key']}, env_iv: {args_dict['enc_iv']}")
+    # end debug
     # 删除水印参数
     delog_opts = ''
     if delog_tuple is not None:
@@ -459,6 +493,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               fix_ts_time: 'H264EncoderArgs' = H264EncoderArgs.no_fix_ts_time,
                               ts_prefix: str = 'ts',
                               hls_enc: int = 0,
+                              hls_enc_key: str = None,
                               hls_enc_key_url: str = '',
                               # 截图,裁剪视频相关
                               start_time: float = 0,
@@ -499,7 +534,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param fix_ts_time: 是否固定切片时长
     :param ts_prefix: ts 切片前缀名
     :param hls_enc: ts切片是否加密
-    :param hls_enc_key_url: hls加密keyurl
+    :param hls_enc_key: 是否自定义hls加密key 16个16进制数
+    :param hls_enc_key_url: hls加密keyurl, 必须输入 hls_enc_key 参数数时, 该参数才有效
     # 截图,裁剪视频相关
     :param start_time: 截图或裁剪视频起始时间
     :param last_time: 裁剪视频持续时间
@@ -520,7 +556,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                                      input_img, output_file, target_width, target_height,
                                      v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
-                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple)
+                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None
     # 视频缩放的特殊处理
@@ -654,6 +690,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     fix_ts_time: 'H264EncoderArgs' = H264EncoderArgs.no_fix_ts_time,
                     ts_prefix: str = 'ts',
                     hls_enc: int = 0,
+                    hls_enc_key: str = None,
                     hls_enc_key_url: str = '',
                     # 截图,裁剪视频相关
                     start_time: float = 0,
@@ -694,7 +731,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     :param fix_ts_time: 是否固定切片时长
     :param ts_prefix: ts 切片前缀名
     :param hls_enc: ts切片是否加密
-    :param hls_enc_key_url: hls加密keyurl
+    :param hls_enc_key: 是否自定义hls加密key 16个16进制数
+    :param hls_enc_key_url: hls加密keyurl, 必须输入 hls_enc_key 参数数时, 该参数才有效
     # 截图,裁剪视频相关
     :param start_time: 截图或裁剪视频起始时间
     :param last_time: 裁剪视频持续时间
@@ -715,7 +753,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                                      input_img, output_file, target_width, target_height,
                                      v_frame, metadata_dict, target_videobitrate, 
                                      target_audiobitrate, ass_file, start_time, last_time,
-                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key_url, delog_tuple)
+                                     rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None
     # 视频缩放的特殊处理

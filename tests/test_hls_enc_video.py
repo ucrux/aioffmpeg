@@ -33,6 +33,7 @@ async def test_hls_video_aio():
                                                  ts_time=ts_time,
                                                  ts_prefix='test-ts',
                                                  hls_enc=1,
+                                                 hls_enc_key='0123456789abcdef',
                                                  hls_enc_key_url='https://www.baidu.com')
 
     assert m3u8path is not None and stderr == ''
@@ -68,6 +69,7 @@ def test_hls_video():
                                        ts_time=ts_time,
                                        ts_prefix='test-ts',
                                        hls_enc=1,
+                                       hls_enc_key='0123456789abcdef',
                                        hls_enc_key_url='https://www.baidu.com')
 
     assert m3u8path is not None and stderr == ''
