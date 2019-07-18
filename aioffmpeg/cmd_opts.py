@@ -167,6 +167,7 @@ class FfmpegCmdModel:
     logo_video_move = CMD_LOGO_MOVE
     del_log = CMD_DEL_LOGO
     create_gif = CMD_GIF_VIDEO
+    download_m3u8 = CMD_M3U8_DOWNLOAD
 
 
 class FfmpegOptsModel:

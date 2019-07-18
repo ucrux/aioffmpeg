@@ -271,6 +271,62 @@ class H264Video:
         delog_args = namedtuple('delog_args', delog_args_str)
         args = delog_args(pos_x,pos_y,width,height,begin_time,end_time)
         return args
+    
+    @staticmethod
+    def download_m3u8(ffmpeg_bin: str, m3u8_url: str, output_file: str, *,
+                      encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_libx264, 
+                      preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
+                      crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_28,
+                      profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
+                      level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2) -> tuple:
+        """
+        将m3u8文件转化为mp4
+        :param ffmpeg_bin: ffmpeg 二进制文件路径
+        :param m3u8_url: m3u8文件路径
+        :param output_file: 视频输出文件
+        :param encode_lib: h264编码使用的外部库
+        :param preset_type: 编码速度参数
+        :param crf_num: Constant Rate Factor 值
+        :param profile_type: 编码配置文件
+        :param level: 编码级别
+        return 成功返回(True, ''),失败返回(False, stderr)
+        """
+        cmd = FfmpegCmdModel.download_m3u8.format(
+                ffmpeg_bin=ffmpeg_bin, m3u8_url=m3u8_url, encode_lib=encode_lib,
+                preset_type=preset_type, crf_num=crf_num, profile_type=profile_type,
+                level=level, output_file=output_file)
+        status, _, stderr = simple_run_cmd(cmd)
+        if status != 0:
+            return False, stderr
+        return True, ''
+
+    @staticmethod
+    async def download_m3u8_aio(ffmpeg_bin: str, m3u8_url: str, output_file: str, *,
+                                encode_lib: 'H264EncoderArgs' = H264EncoderArgs.codec_v_libx264, 
+                                preset_type: 'H264EncoderArgs' = H264EncoderArgs.preset_veryslow,
+                                crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_28,
+                                profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
+                                level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2) -> tuple:
+        """
+        将m3u8文件转化为mp4
+        :param ffmpeg_bin: ffmpeg 二进制文件路径
+        :param m3u8_url: m3u8文件路径
+        :param output_file: 视频输出文件
+        :param encode_lib: h264编码使用的外部库
+        :param preset_type: 编码速度参数
+        :param crf_num: Constant Rate Factor 值
+        :param profile_type: 编码配置文件
+        :param level: 编码级别
+        return 成功返回(True, ''),失败返回(False, stderr)
+        """
+        cmd = FfmpegCmdModel.download_m3u8.format(
+                ffmpeg_bin=ffmpeg_bin, m3u8_url=m3u8_url, encode_lib=encode_lib,
+                preset_type=preset_type, crf_num=crf_num, profile_type=profile_type,
+                level=level, output_file=output_file)
+        status, _, stderr = await run_cmd(cmd)
+        if status != 0:
+            return False, stderr 
+        return True, ''
 
     def __init__(self, video_file: str, output_dir: str = '/tmp',
                  ffmpeg_bin: str = '/opt/ffmpeg/bin/ffmpeg',
