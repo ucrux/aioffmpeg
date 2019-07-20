@@ -160,6 +160,16 @@ def main():
     kwargs['ts_prefix'] = str(uuid.uuid1())
     try:
         if args.function == r'm':
+            status, stdout, _ = simple_run_cmd(r'which ffmpeg')
+            if status != 0:
+                print(r'can not find ffmpeg bin in $PATH')
+                exit(-1)
+            ffmpeg_bin = stdout.replace('\n', '')
+            status, stdout, stderr = simple_run_cmd(r'which ffprobe')
+            if status != 0:
+                print(r'can not find ffprobe bin in $PATH')
+                exit(-1)
+            ffprobe_bin = stdout.replace('\n', '')
             # 合并TS文件
             _, output = _init_tools(None, args.output)
             print(r'begin concat ts ...')
