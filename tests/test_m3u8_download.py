@@ -8,7 +8,7 @@ import random
 
 
 @pytest.mark.asyncio
-async def test_scale_video_aio():
+async def test_dl_m3u8_aio():
     """
     测试下载m3u8
     :return:

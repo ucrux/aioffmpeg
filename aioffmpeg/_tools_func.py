@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*
 from aioffmpeg.tools_func import *
 from aioffmpeg.cmd_opts import *
 

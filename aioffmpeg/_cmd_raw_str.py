@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 此文件保存 aioffmpeg 使用的一些命令
 供 aioffmpeg 类引用

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from aioffmpeg_h264_encoder_args import *
 from aioffmpeg_tools_func import *
 from _aioffmpeg_tools_func import *

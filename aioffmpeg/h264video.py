@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from aioffmpeg.cmd_opts import *
 from aioffmpeg._tools_func import _ffmpeg_do_cmd, _create_command, _create_command_aio
 from aioffmpeg.tools_func import *
