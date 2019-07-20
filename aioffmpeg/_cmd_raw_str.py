@@ -406,7 +406,7 @@ CMD_GIF_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_
 
 # 下载m3u8,合成mp4文件,使用源视频的帧率和码率
 CMD_M3U8_DOWNLOAD = r"'{ffmpeg_bin:s}' -hide_banner -allowed_extensions ALL -y " \
-                    r"-protocol_whitelist 'file,http,crypto,tcp,https' -i '{m3u8_url:s}' -threads 0 " \
+                    r"-protocol_whitelist 'file,http,crypto,tcp,https,tls' -i '{m3u8_url:s}' -threads 0 " \
                     r"-c:v {encode_lib:s} -c:a aac -f mp4 -movflags +faststart " \
                     r'-vf "format=yuv420p" -preset {preset_type:s} -crf {crf_num:d} ' \
                     r"-profile:v {profile_type:s} -level {level:s} '{output_file:s}'"
