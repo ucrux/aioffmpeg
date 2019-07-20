@@ -173,7 +173,7 @@ def main():
             # 合并TS文件
             _, output = _init_tools(None, args.output)
             print(r'begin concat ts ...')
-            result, stderr = H264Video.download_m3u8(ffmpeg_bin, args.input, output)
+            result, stderr = H264Video.download_m3u8(ffmpeg_bin, args.input[0][0], output)
             if result:
                 print(f'concat done, output: {output}')
             else:

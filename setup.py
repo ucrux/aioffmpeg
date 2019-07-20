@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 setup(name='aioffmpeg',
-      version='0.1.19',
+      version='0.1.20',
       description='a ffmpeg wrapped lib for asyncio',
       long_description='',
       author='ucrux',
