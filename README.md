@@ -204,6 +204,63 @@ gifpath, stderr = h264_obj.cmd_do(f'{home_dir:s}', 'gif', FfmpegCmdModel.create_
 成功返回一个 gif文件的路径,和一个空字符串<br>
 失败返回 None, stderr
 
+命令行工具
+===
+
+```
+$ aioffpmeg -h
+usage: aioffpmeg [-h] --function {m,s,c,t,n,d,a,g,h} --input INPUT [INPUT ...]
+                 --output OUTPUT [--width WIDTH] [--height HEIGHT]
+                 [--videorate VIDEORATE] [--codeclib {g,c}]
+                 [--startime STARTIME] [--lastime LASTIME]
+                 [--positionx POSITIONX] [--positiony POSITIONY]
+                 [--dwidth DWIDTH] [--dheight DHEIGHT] [--ratio RATIO]
+                 [--giframe GIFRAME] [--tstime TSTIME]
+
+aioffmpeg command line tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --function {m,s,c,t,n,d,a,g,h}, -f {m,s,c,t,n,d,a,g,h}
+                        this tool's functions, m: concat ts from m3u8 file, s:
+                        scale video, c: cut video, t: concat video, n: take a
+                        snapshot from video, d: delete video logo, a: add logo
+                        to video, g: make a gif from video, h: make hls ts
+                        from video
+  --input INPUT [INPUT ...], -i INPUT [INPUT ...]
+                        input m3u8 file(local or url), or input video
+  --output OUTPUT, -o OUTPUT
+                        output file(jpg,gif,mp4,m3u8)
+  --width WIDTH, -w WIDTH
+                        video width, default using source video's width
+  --height HEIGHT, -e HEIGHT
+                        video(image) height, default using source video's
+                        height,image only has height
+  --videorate VIDEORATE, -r VIDEORATE
+                        video rate, default using source video's video rate
+  --codeclib {g,c}, -l {g,c}
+                        video codec lib, g: gpu codec, c: cpu codec
+  --startime STARTIME, -s STARTIME
+                        cut video, make gif or take snapshot begin time
+  --lastime LASTIME, -t LASTIME
+                        cut vider or make gif last time
+  --positionx POSITIONX, -x POSITIONX
+                        delete logo or add logo position x
+  --positiony POSITIONY, -y POSITIONY
+                        delete logo or add logo position y
+  --dwidth DWIDTH, -dw DWIDTH
+                        delete logo width
+  --dheight DHEIGHT, -dh DHEIGHT
+                        delete logo height
+  --ratio RATIO, -rh RATIO
+                        add loge ratio of video height
+  --giframe GIFRAME, -gf GIFRAME
+                        gif frame
+  --tstime TSTIME, -ts TSTIME
+                        ts fragment time
+
+```
+
 其他文档
 ===
 - [centos7安装ffmpeg](./docs/centos7x64_ffmpeg_install.md)
