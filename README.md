@@ -1,6 +1,8 @@
 模块安装
 ===
 
+*尝试添加QSV很痛苦*
+
 进入代码目录执行
 ```bash
 python setup.py sdist
