@@ -387,36 +387,39 @@ class H264Video:
         # print(videofile_probe)
         # end debug
         try:
+            # 如果缺少视频流或者音频流,会抛出异常
+            video_index = 0 if videofile_probe['streams'][0]['codec_type'] == 'video' else 1 
+            audio_index = video_index ^ 1
             # 判断视频流和音频流都存在
-            assert videofile_probe['streams'][0]['codec_type'] == 'video'
-            assert videofile_probe['streams'][1]['codec_type'] == 'audio'
+            # assert videofile_probe['streams'][video_index]['codec_type'] == 'video'
+            # assert videofile_probe['streams'][1]['codec_type'] == 'audio'
             # 视频流属性
-            self._video_codecname = videofile_probe['streams'][0]['codec_name']
-            self._video_profile = videofile_probe['streams'][0]['profile']
-            self._video_width = int(float(videofile_probe['streams'][0]['width']))
-            self._video_height = int(float(videofile_probe['streams'][0]['height']))
+            self._video_codecname = videofile_probe['streams'][video_index]['codec_name']
+            self._video_profile = videofile_probe['streams'][video_index]['profile']
+            self._video_width = int(float(videofile_probe['streams'][video_index]['width']))
+            self._video_height = int(float(videofile_probe['streams'][video_index]['height']))
             # 视频旋转属性
             try:
-                self._rotate = videofile_probe['streams'][0]['tags']['rotate']
+                self._rotate = videofile_probe['streams'][video_index]['tags']['rotate']
             except (KeyError,IndexError):
                 self._rotate = 0
-            self._video_pixfmt = videofile_probe['streams'][0]['pix_fmt']
-            self._video_avgframerate = int(float(videofile_probe['streams'][0]['avg_frame_rate'].split('/')[0])/
-                                           float(videofile_probe['streams'][0]['avg_frame_rate'].split('/')[1]))
+            self._video_pixfmt = videofile_probe['streams'][video_index]['pix_fmt']
+            self._video_avgframerate = int(float(videofile_probe['streams'][video_index]['avg_frame_rate'].split('/')[0])/
+                                           float(videofile_probe['streams'][video_index]['avg_frame_rate'].split('/')[1]))
             try:
-                self._video_bitrate = int(float(videofile_probe['streams'][0]['bit_rate']))
+                self._video_bitrate = int(float(videofile_probe['streams'][video_index]['bit_rate']))
             except KeyError:
                 self._video_bitrate = int(float(videofile_probe['format']['bit_rate']))
             # 音频流属性
-            self._audio_codecname = videofile_probe['streams'][1]['codec_name']
+            self._audio_codecname = videofile_probe['streams'][audio_index]['codec_name']
             try:
-                self._audio_profile = videofile_probe['streams'][1]['profile']
+                self._audio_profile = videofile_probe['streams'][audio_index]['profile']
             except KeyError:
                 self._audio_profile = 'unknown'
-            self._audio_samplefmt = videofile_probe['streams'][1]['sample_fmt']
-            self._audio_samplerate = int(float(videofile_probe['streams'][1]['sample_rate']))
-            self._audio_channels = int(float(videofile_probe['streams'][1]['channels']))
-            self._audio_bitrate = int(float(videofile_probe['streams'][1]['bit_rate']))
+            self._audio_samplefmt = videofile_probe['streams'][audio_index]['sample_fmt']
+            self._audio_samplerate = int(float(videofile_probe['streams'][audio_index]['sample_rate']))
+            self._audio_channels = int(float(videofile_probe['streams'][audio_index]['channels']))
+            self._audio_bitrate = int(float(videofile_probe['streams'][audio_index]['bit_rate']))
             # 视频文件属性
             self._videofile_duration = float(videofile_probe['format']['duration'])
             self._videofile_size = float(videofile_probe['format']['size'])
