@@ -131,6 +131,11 @@ class H264EncoderArgs():
     v_left_rotate = 2
     v_right_rotate = 1
     """
+    自动旋转,即跟随matedata中视频的旋转方向
+    """
+    autorotate = r''
+    noautorotate = r'-noautorotate'
+    """
     是否固定ts切片的时长
     """
     no_fix_ts_time = ''
@@ -141,11 +146,55 @@ class H264EncoderArgs():
     audio_rate_64 = 64
     audio_rate_128 = 128
     """
+    音频采样率
+    """
+    audio_simple_rate_default = r''
+    audio_simple_rate_44100 = r'-ar 44100'
+    audio_simple_rate_48000 = r'-ar 48000'
+    """
+    音频声道数
+    """
+    audio_channel_default = r''
+    audio_channel_1 = r'-ac 1'
+    audio_channel_2 = r'-ac 2'
+    """
     图片水印模版
     """
     # 固定图片水印位置
     water_mark_fix = 0
     water_mark_move = 1
+    """
+    编解码外部设备
+    """
+    hwaccel_default = r''
+    hwaccel_cuda = r'-hwaccel cuda'
+    hwaccel_cuvid = r'-hwaccel cuvid'
+    hwaccel_qsv = r'-hwaccel qsv'
+    """
+    外部编解码设备编号
+    """
+    hwaccel_device_default = r''
+    hwaccel_device_gpu0 = r'hwaccel_device 0'
+    hwaccel_device_gpu1 = r'hwaccel_device 1'
+    hwaccel_device_gpu2 = r'hwaccel_device 2'
+    hwaccel_device_gpu3 = r'hwaccel_device 3'
+    hwaccel_device_gpu4 = r'hwaccel_device 4'
+    hwaccel_device_gpu5 = r'hwaccel_device 5'
+    hwaccel_device_gpu6 = r'hwaccel_device 6'
+    hwaccel_device_gpu7 = r'hwaccel_device 7'
+    """
+    外部解码器
+    """
+    decoder_default = r''
+    decoder_h264_cuda = r'-c:v h264_cuda'
+    decoder_h264_cuvid = r'-c:v h264_cuvid'
+    decoder_h264_qsv = r'-c:v h264_qsv'
+    """
+    QSV相关参数
+    """
+    qsv_init_hw_device_none = r''
+    qsv_init_hw_device = r'-init_hw_device qsv=qsv:hw'
+    qsv_filter_hw_device = r'-filter_hw_device qsv'
 
 
 class FfmpegCmdModel:
