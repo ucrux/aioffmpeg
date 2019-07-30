@@ -13,8 +13,8 @@ async def test_concat_video_aio():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
-    h264_obj1 = H264Video(constval.VIDEO1, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
+    h264_obj1 = H264Video(constval.VIDEO1, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     concat_video, stderr = await h264_obj.cmd_do_aio(f'{home_dir:s}', 'mp4', FfmpegCmdModel.concat_video,
@@ -41,8 +41,8 @@ def test_concat_video():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
-    h264_obj1 = H264Video(constval.VIDEO1, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
+    h264_obj1 = H264Video(constval.VIDEO1, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     concat_video, stderr = h264_obj.cmd_do(f'{home_dir:s}', 'mp4', FfmpegCmdModel.concat_video,
