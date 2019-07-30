@@ -24,7 +24,6 @@ async def test_scale_video_cuda_aio():
                                                    encode_lib=H264EncoderArgs.codec_v_libx264,
                                                    hwaccel=H264EncoderArgs.hwaccel_cuda,
                                                    decoder=H264EncoderArgs.decoder_h264_cuvid)
-                                                   )
     assert scaled_obj is not None and stderr == ''
     print('H264Video object info:', scaled_obj)
     print(f'out put video width:{scaled_obj.video_width:d},video height:{scaled_obj.video_height:d},'
