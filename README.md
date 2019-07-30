@@ -34,6 +34,9 @@ h264_obj = H264Video(video_file, output_dir, ffmpeg_bin,
 -hwaccel cuda -c:v h264_cuvid(decoder)
 -hwaccel cuvid
 -hwaccel cuda
+-hwaccel cuda -c:v h264_cuvid(decoder) -c:v libx264(encoder)
+-hwaccel cuvid -c:v libx264(encoder)
+-hwaccel cuda -c:v libx264(encoder)
 ```
 
 
