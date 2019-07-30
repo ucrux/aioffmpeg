@@ -44,6 +44,7 @@ def test_hls_video():
     m3u8path, stderr = h264_obj.cmd_do(f'{home_dir:s}', 'm3u8', FfmpegCmdModel.hls_video_qsv,
                                        target_videobitrate=video_bitrate,
                                        target_height=random.randint(100,300),
+                                       hls_enc=1,
                                        ts_time=ts_time,
                                        ts_prefix='test-ts')
 
