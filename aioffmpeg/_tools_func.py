@@ -237,7 +237,7 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     last_time = last_time if start_time + last_time <= cls_obj.videofile_duration \
         else cls_obj.videofile_duration - start_time
     # 判断参数的合法性
-    if any([i <= 0 for i in (target_width, target_height, v_frame, target_videobitrate,
+    if any([int(i) <= 0 for i in (target_width, target_height, v_frame, target_videobitrate,
                              target_audiobitrate, last_time)]) \
             or start_time < 0 or start_time >= cls_obj.videofile_duration:
         return None
