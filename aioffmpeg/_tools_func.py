@@ -165,8 +165,9 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
 
 
 def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
+                         hwaccel, hwaccel_device, is_autorotate, decoder, qsv_hw_device,
                          input_img, output_file, target_width, target_height,
-                         v_frame, metadata_dict, target_videobitrate, 
+                         v_frame, metadata_dict, target_videobitrate, ar, ac,
                          target_audiobitrate, ass_file, start_time, last_time,
                          rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple):
     """
@@ -187,6 +188,11 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     args_dict['crf_num'] = crf_num
     args_dict['profile_type'] = profile_type
     args_dict['level'] = level
+    args_dict['hwaccel'] = hwaccel
+    args_dict['hwaccel_device'] = hwaccel_device
+    args_dict['is_autorotate'] = is_autorotate
+    args_dict['decoder'] = decoder
+    args_dict['qsv_hw_device'] = qsv_hw_device
     # 文件绝对路径
     args_dict['input_file'] = os.path.abspath(cls_obj.videofile_path)
     args_dict['input_img'] = os.path.abspath(input_img) if input_img else None
@@ -240,6 +246,14 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
     args_dict['frame'] = v_frame
     args_dict['video_rate'] = target_videobitrate
     args_dict['audio_rate'] = target_audiobitrate
+    if ar != H264EncoderArgs.audio_simple_rate_default:
+        args_dict['ar'] = ar if int(ar.split()[-1]) <= cls_obj.audio_samplerate else H264EncoderArgs.audio_simple_rate_default
+    else:
+        args_dict['ar'] = ar
+    if ac != H264EncoderArgs.audio_channel_default:
+        args_dict['ac'] = ac if int(ac.split()[-1]) <= cls_obj.audio_channels else H264EncoderArgs.audio_channel_default
+    else:
+        args_dict['ac'] = ac
     #str_start_time = '0' + str(datetime.timedelta(seconds=start_time)) if start_time < 36000 \
     #    else str(datetime.timedelta(seconds=start_time))
     #str_last_time = '0' + str(datetime.timedelta(seconds=last_time)) if last_time < 36000 \
@@ -473,6 +487,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               target_height: int = 0,
                               target_videobitrate: int = 0,
                               target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_128,
+                              ar: 'H264EncoderArgs' = H264EncoderArgs.audio_simple_rate_default,
+                              ac: 'H264EncoderArgs' = H264EncoderArgs.audio_channel_default,
                               v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
                               # 视频元数据修改
                               metadata_dict: dict = None,
@@ -482,6 +498,11 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
                               crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_23,
                               profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
                               level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2,
+                              hwaccel: 'H264EncoderArgs' = H264EncoderArgs.hwaccel_default,
+                              hwaccel_device: 'H264EncoderArgs' = H264EncoderArgs.hwaccel_device_default,
+                              is_autorotate: 'H264EncoderArgs' = H264EncoderArgs.autorotate,
+                              decoder: 'H264EncoderArgs' = H264EncoderArgs.decoder_default,
+                              qsv_hw_device: 'H264EncoderArgs' = H264EncoderArgs.qsv_hw_device_none,
                               # 字幕相关
                               ass_file: str = None,
                               # 旋转视频方向参
@@ -514,6 +535,8 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param target_height: 输出视频目标高度
     :param target_videobitrate: 输出视频目标码率
     :param target_audiobitrate: 输出音频目标码率
+    :param ar: 音频采样率
+    :param ac: 音频声道数
     :param v_frame: 输出视频目标帧率
     # 视频元数据修改
     :param metadata_dict: 视频元数据字典,用于修改视频元数据
@@ -523,6 +546,11 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     :param crf_num: Constant Rate Factor 值
     :param profile_type: 编码配置文件
     :param level: 编码级别
+    :param hwaccel: 外部编解码设备名
+    :param hwaccel_device: 外部编解码设备index
+    :param is_autorotate: 是否自动旋转
+    :param decoder: 外表解码器名
+    :param qsv_hw_device: QSV设备相关参数
     # 字幕相关
     :param ass_file: 字幕文件
     # 旋转视频方向参数
@@ -550,10 +578,11 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     args_dict = dict()
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
-    args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
+    args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level, 
+                                     hwaccel, hwaccel_device, is_autorotate, decoder, qsv_hw_device,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, metadata_dict, target_videobitrate, 
-                                     target_audiobitrate, ass_file, start_time, last_time,
+                                     v_frame, metadata_dict, target_videobitrate, target_audiobitrate, ar, ac,
+                                     ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None
@@ -670,6 +699,8 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     target_height: int = 0,
                     target_videobitrate: int = 0,
                     target_audiobitrate: 'H264EncoderArgs' = H264EncoderArgs.audio_rate_64,
+                    ar: 'H264EncoderArgs' = H264EncoderArgs.audio_simple_rate_default,
+                    ac: 'H264EncoderArgs' = H264EncoderArgs.audio_channel_default,
                     v_frame: 'H264EncoderArgs' = H264EncoderArgs.v_frame_24,
                     # 视频元数据修改
                     metadata_dict: dict = None,
@@ -679,6 +710,11 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     crf_num: 'H264EncoderArgs' = H264EncoderArgs.crf_23,
                     profile_type: 'H264EncoderArgs' = H264EncoderArgs.profile_high,
                     level: 'H264EncoderArgs' = H264EncoderArgs.level_4_2,
+                    hwaccel: 'H264EncoderArgs' = H264EncoderArgs.hwaccel_default,
+                    hwaccel_device: 'H264EncoderArgs' = H264EncoderArgs.hwaccel_device_default,
+                    is_autorotate: 'H264EncoderArgs' = H264EncoderArgs.autorotate,
+                    decoder: 'H264EncoderArgs' = H264EncoderArgs.decoder_default,
+                    qsv_hw_device: 'H264EncoderArgs' = H264EncoderArgs.qsv_hw_device_none,
                     # 字幕相关
                     ass_file: str = None,
                     # 旋转视频方向参
@@ -700,46 +736,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
                     # 删除图片水印相关
                     delog_tuple: tuple = None) -> str:
     """
-    :param cls_obj: ffmpeg 相关对象
-    :param output_file: 视频输出文件
-    :param prefix: two-pass log 前缀
-    # 输入文件
-    :param input_obj: 拼接视频时使另外一个输入实例
-    :param input_img: 水印图片
-    # 音视频基础参数
-    :param target_width: 输出视频目标宽度
-    :param target_height: 输出视频目标高度
-    :param target_videobitrate: 输出视频目标码率
-    :param target_audiobitrate: 输出音频目标码率
-    :param v_frame: 输出视频目标帧率
-    # 视频元数据修改
-    :param metadata_dict: 视频元数据字典,用于修改视频元数据
-    # 编码相关
-    :param encode_lib: h264编码使用的外部库
-    :param preset_type: 编码速度参数
-    :param crf_num: Constant Rate Factor 值
-    :param profile_type: 编码配置文件
-    :param level: 编码级别
-    # 字幕相关
-    :param ass_file: 字幕文件
-    # 旋转视频方向参数
-    :param rotate_direct: 视频旋转方向
-    # hls相关
-    :param ts_time: ts切片时长
-    :param fix_ts_time: 是否固定切片时长
-    :param ts_prefix: ts 切片前缀名
-    :param hls_enc: ts切片是否加密
-    :param hls_enc_key: 是否自定义hls加密key 16个16进制数
-    :param hls_enc_key_url: hls加密keyurl, 必须输入 hls_enc_key 参数数时, 该参数才有效
-    # 截图,裁剪视频相关
-    :param start_time: 截图或裁剪视频起始时间
-    :param last_time: 裁剪视频持续时间
-    # 水印相关
-    :param ratio_img_height: 图片水印高度和源视频高度只比
-    :param img_position_x: 固定图片水印x轴位置
-    :param img_position_y: 固定图片水印y轴位置
-    # 删除图片水印相关
-    delog_tuple: 删除水印是的参数元祖
+    参数同aio版本的函数
     """
     if cmd_model == FfmpegCmdModel.ch_video_metadata and not metadata_dict:
         return None, None
@@ -747,10 +744,11 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     args_dict = dict()
     args_dict['input_file1'] = None
     args_dict['input_file2'] = None
-    args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
+    args_dict = _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level, 
+                                     hwaccel, hwaccel_device, is_autorotate, decoder, qsv_hw_device,
                                      input_img, output_file, target_width, target_height,
-                                     v_frame, metadata_dict, target_videobitrate, 
-                                     target_audiobitrate, ass_file, start_time, last_time,
+                                     v_frame, metadata_dict, target_videobitrate, target_audiobitrate, ar, ac,
+                                     ass_file, start_time, last_time,
                                      rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple)
     if args_dict is None:
         return None, None

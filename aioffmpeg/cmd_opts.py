@@ -20,6 +20,7 @@ class H264EncoderArgs():
     """
     codec_v_libx264 = 'libx264'
     codec_v_h264_nvenc = 'h264_nvenc'
+    codec_v_h264_qsv = 'h264_qsv'
 
     """
     profile 参数 H.264 Baseline profile,Extended profile和Main profile都是针对8位样本数据,4:2:0格式(YUV)的视频序列
@@ -186,15 +187,13 @@ class H264EncoderArgs():
     外部解码器
     """
     decoder_default = r''
-    decoder_h264_cuda = r'-c:v h264_cuda'
     decoder_h264_cuvid = r'-c:v h264_cuvid'
     decoder_h264_qsv = r'-c:v h264_qsv'
     """
     QSV相关参数
     """
-    qsv_init_hw_device_none = r''
-    qsv_init_hw_device = r'-init_hw_device qsv=qsv:hw'
-    qsv_filter_hw_device = r'-filter_hw_device qsv'
+    qsv_hw_device_none = r''
+    qsv_hw_device = r'-init_hw_device qsv=qsv:hw -filter_hw_device qsv'
 
 
 class FfmpegCmdModel:
