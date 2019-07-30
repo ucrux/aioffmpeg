@@ -600,6 +600,10 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
     if cmd_model == FfmpegCmdModel.hls_video_qsv:
         if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
             return None, None
+    # qsv 裁减视频
+    if cmd_model == FfmpegCmdModel.cut_video_qsv:
+        if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
+            return None, None
     # 拼接视频的特殊处理
     if cmd_model == FfmpegCmdModel.concat_video:
         if input_obj is None or not hasattr(input_obj, 'aio'):
@@ -767,6 +771,10 @@ def _create_command(cls_obj, output_file: str, prefix: str,
     if cmd_model == FfmpegCmdModel.hls_video:
         cmd2 = FfmpegCmdModel.hls_video_other.format(**args_dict)
     if cmd_model == FfmpegCmdModel.hls_video_qsv:
+        if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
+            return None, None
+    # qsv 裁减视频
+    if cmd_model == FfmpegCmdModel.cut_video_qsv:
         if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
             return None, None
     # 拼接视频的特殊处理

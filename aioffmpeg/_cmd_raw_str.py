@@ -321,6 +321,21 @@ CMD_CUT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -ss {start_time:f} -t '{last_
                 r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                 r"-level {level:s} -b:v {video_rate:d}k " \
                 r"'{output_file:s}'"
+CMD_CUT_VIDEO_QSV = r"'{ffmpeg_bin:s}' -noautorotate -init_hw_device qsv=qsv:hw -filter_hw_device qsv -hwaccel qsv -c:v h264_qsv " \
+                    r"-hide_banner -y -ss {start_time:f} -t '{last_time:f}' -i '{input_file:s}' -threads 0 " \
+                    r"-c:v h264_qsv -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
+                    r"-vf 'scale_qsv=-1:{target_height:d}' -g {frame:d} " \
+                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
+                    r"-level {level:s} -b:v {video_rate:d}k /dev/null && " \
+                    r"'{ffmpeg_bin:s}' -noautorotate -init_hw_device qsv=qsv:hw -filter_hw_device qsv -hwaccel qsv -c:v h264_qsv " \
+                    r"-hide_banner -y -ss {start_time:f} -t '{last_time:f}' -i '{input_file:s}' -threads 0 " \
+                    r"-c:v h264_qsv -c:a aac {ar} {ar} -b:a {audio_rate:d}k -pass 2 " \
+                    r"-f mp4 -movflags +faststart -passlogfile {prefix:s} " \
+                    r"-vf 'scale_qsv=-1:{target_height:d}' -g {frame:d} " \
+                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
+                    r"-level {level:s} -b:v {video_rate:d}k " \
+                    r"'{output_file:s}'"
+
 
 # 视频拼接命令
 # 有gpu转码的时候首选CMD_CONCAT_VIDEO命令,如果CMD_CONCAT_VIDEO失败则使用CMD_CONCAT_VIDEO_SAFE

@@ -207,6 +207,7 @@ class FfmpegCmdModel:
     hls_video_qsv = CMD_HLS_VIDEO_QSV
     snapshot_video = CMD_SNAPSHOT
     cut_video = CMD_CUT_VIDEO
+    cut_video_qsv = CMD_CUT_VIDEO_QSV
     concat_video = CMD_CONCAT_VIDEO
     concat_video_safe = CMD_CONCAT_VIDEO_SAFE
     logo_video_fix = CMD_LOGO_FIX
