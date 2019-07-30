@@ -61,17 +61,17 @@ sudo apt-get install gcc g++ linux-headers-$(uname -r) dkms build-essential -y
 ### 下载
 ```shell
 # 软件包
-wget --no-check-certificate https://developer.nvidia.com/compute/cuda/9.2/Prod2/local_installers/cuda-repo-ubuntu1604-9-2-local_9.2.148-1_amd64
+wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
 ```
 
-### 安装(实际为配置本地源)
+### 安装(实际为源)
 ```shell
-sudo dpkg -i cuda-repo-ubuntu1604-9-2-local_9.2.148-1_amd64
+sudo dpkg -i cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
 ```
 
 ### 信任安装源证书
 ```
-sudo apt-key add /var/cuda-repo-9-2-local/7fa2af80.pub
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
 ```
 
 ### 安装软件
@@ -85,8 +85,8 @@ sudo apt-get install cuda
 
 ## 添加环境变量
 ```shell
-export PATH=/usr/local/cuda-9.2/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda-9.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
 ## 验证安装
@@ -104,10 +104,10 @@ GCC version:  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.10)
 ### 使用官方实例进行编译
 ```shell
 # 下载官方试例(环境变量配置正确的情况下,可以这样使用)
-cuda-install-samples-9.2.sh  ~
+cuda-install-samples-10.1.sh  ~
 
 # 进入示例代码目录
-cd ~/NVIDIA_CUDA-9.2_Samples/
+cd ~/NVIDIA_CUDA-10.1_Samples/
 
 # 编译示例代码
 make -j8
@@ -206,7 +206,7 @@ sudo ln -s /usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0 /usr/lib/x86_64-linux-gnu/
 *make some dir*
 
 ```shell
-mkdir ~/extapp/vaapi
+mkdir -pv ~/extapp/vaapi
 ```
 
 ## install libdrm
@@ -376,14 +376,14 @@ sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype
   libtheora-dev libtool libvorbis-dev pkg-config texinfo zlib1g-dev unzip cmake mercurial
 ```
 
-## 关闭图形界面
+## 关闭图形界面(服务器环境)
 ```shell
 sudo systemctl set-default multi-user.target
 ```
 
 ## 创建编译用的目录
 ```shell
-mkdir ${HOME}/ffmpeg/{ffmpeg_source,ffmpeg_build,bin} -pv
+mkdir ${HOME}/extapp/ffmpeg/{ffmpeg_source,ffmpeg_build,bin} -pv
 ```
 
 - ffmpeg_sources: 存放源码
@@ -613,23 +613,9 @@ make -j8 && \
 make install
 ```
 
-## 配置NVENC并下载ffmpeg
+## 安装ffmpeg
 
-### 安装NVENC的依赖
 
-```shell
-#sudo apt-get -y install glew-utils libglew-dbg libglew-dev libglew1.13 \
-#libglewmx-dev libglewmx-dbg freeglut3 freeglut3-dev freeglut3-dbg libghc-glut-dev \
-#libghc-glut-doc libghc-glut-prof libalut-dev libxmu-dev libxmu-headers libxmu6 \
-#libxmu6-dbg libxmuu-dev libxmuu1 libxmuu1-dbg
-```
-
-### 下载ffmpeg
-```shell
-# git获取代码
-#cd /data/ffmpeg/ffmpeg_sources
-#git clone https://github.com/FFmpeg/FFmpeg ffmpeg -b master
-```
 
 ### 安装NVIDIA SDK
 ```
@@ -638,6 +624,12 @@ git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git && \
 cd nv-codec-headers && \
 make && \
 sudo make install
+```
+
+**如果要ffplay**
+
+```shell
+sudo apt install libsdl2-dev
 ```
 
 ### 安装ffmpeg
