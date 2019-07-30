@@ -220,13 +220,15 @@ CMD_SCALE_VIDEO_CODECS = r"'{ffmpeg_bin:s}' {hwaccel} {hwaccel_device} {is_autor
                          r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k '{output_file:s}'"
 # 视频旋转命令,支持视频的左旋和右旋
-CMD_ROTATE_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
+CMD_ROTATE_VIDEO = r"'{ffmpeg_bin:s}' {hwaccel} {hwaccel_device} {is_autorotate} {decoder} " \
+                   r"-hide_banner -y -i '{input_file:s}' -threads 0 " \
                    r"-c:v {encode_lib:s} -pass 1 -an -f mp4 -movflags +faststart -passlogfile {prefix:s} " \
                    r"-vf 'format=yuv420p,transpose={rotate_direct:d}' -g {frame:d} " \
                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k /dev/null && " \
-                   r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
-                   r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 -f mp4 " \
+                   r"'{ffmpeg_bin:s}' {hwaccel} {hwaccel_device} {is_autorotate} {decoder} " \
+                   r"-hide_banner -y -i '{input_file:s}' -threads 0 " \
+                   r"-c:v {encode_lib:s} -c:a aac  {ar} {ac} -b:a {audio_rate:d}k -pass 2 -f mp4 " \
                    r"-movflags +faststart -passlogfile {prefix:s} " \
                    r"-vf 'format=yuv420p,transpose={rotate_direct:d}' -g {frame:d} " \
                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
