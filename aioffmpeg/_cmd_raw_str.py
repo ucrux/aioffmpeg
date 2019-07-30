@@ -287,6 +287,19 @@ CMD_HLS_VIDEO_OTHER = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -th
                       r"-strftime 1 " \
                       r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
                       r"'{output_file:s}'"
+# QSV HLS 切片
+CMD_HLS_VIDEO_QSV = r"'{ffmpeg_bin:s}' -noautorotate -init_hw_device qsv=qsv:hw -filter_hw_device qsv -hwaccel qsv -c:v h264_qsv " \
+                    r"-hide_banner -y -i '{input_file:s}' -threads 0 -c:v h264_qsv -c:a aac {ar} {ac} -b:a {audio_rate:d}k " \
+                    r"-f hls -movflags +faststart -vf 'scale_qsv=-2:{target_height:d}' -g {frame:d} " \
+                    r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
+                    r"-level {level:s} -b:v {video_rate:d}k " \
+                    r"-hls_init_time {ts_time:d} -hls_time {ts_time:d} -hls_list_size 0 -hls_enc {enc:d} " \
+                    r"-hls_enc_key {enc_key:s} -hls_enc_iv {enc_iv:s} {hls_enc_key_url} " \
+                    r"-use_localtime 1 -hls_flags " \
+                    r"second_level_segment_size+second_level_segment_index+second_level_segment_duration{fix_ts_time} " \
+                    r"-strftime 1 " \
+                    r'-hls_segment_filename "{output_dir}/{ts_prefix:s}-%%013t-%%08s-%%010d.ts" ' \
+                    r"'{output_file:s}'"
 # 截图命令,截取以帧做为图片
 CMD_SNAPSHOT = r"'{ffmpeg_bin:s}' -ss {start_time:f} -i '{input_file:s}' -passlogfile {prefix:s} -threads 0 " \
                r"-vf 'scale=-2:{target_height:d}' -y -f image2 " \

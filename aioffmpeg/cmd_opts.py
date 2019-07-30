@@ -204,6 +204,7 @@ class FfmpegCmdModel:
     rotate_video = CMD_ROTATE_VIDEO
     hls_video = CMD_HLS_VIDEO
     hls_video_other = CMD_HLS_VIDEO_OTHER
+    hls_video_qsv = CMD_HLS_VIDEO_QSV
     snapshot_video = CMD_SNAPSHOT
     cut_video = CMD_CUT_VIDEO
     concat_video = CMD_CONCAT_VIDEO

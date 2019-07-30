@@ -172,6 +172,10 @@ class H264Video:
         return self._h264_nvenc if hasattr(self, '_h264_nvenc') else False
     
     @property
+    def h264_qsv(self):
+        return self._h264_qsv if hasattr(self, '_h264_qsv') else False
+
+    @property
     def prefix_2pass(self):
         return self._prefix_2pass if hasattr(self, '_prefix_2pass') else ('/tmp/dummy.' + str(time.time()))
 
@@ -377,6 +381,8 @@ class H264Video:
             self._libx264 = True
         if 'h264_nvenc' in stdout:
             self._h264_nvenc = True
+        if 'h264_qsv' in stdout:
+            self._h264_qsv = True
         if not any([self.libx264, self.h264_nvenc]):
             raise EnvironmentError(f'{self._ffmpeg:s} do not have extend encode lib: libx264 or h264_nvenc')
         # 准备获取视频文件的属性
