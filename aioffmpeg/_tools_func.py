@@ -167,8 +167,7 @@ def _dealwith_delog(cls_obj, delog_args: 'namedtuple') -> str:
 def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, crf_num, profile_type, level,
                          hwaccel, hwaccel_device, is_autorotate, decoder, qsv_hw_device,
                          input_img, output_file, target_width, target_height,
-                         v_frame, metadata_dict, target_videobitrate, ar, ac,
-                         target_audiobitrate, ass_file, start_time, last_time,
+                         v_frame, metadata_dict, target_videobitrate, target_audiobitrate, ar, ac, ass_file, start_time, last_time,
                          rotate_direct, ts_time, fix_ts_time, ts_prefix, hls_enc, hls_enc_key, hls_enc_key_url, delog_tuple):
     """
     命令创建工具函数,仅供内部使用,错误检查较少
@@ -238,8 +237,8 @@ def _cmd_tools_base_info(cls_obj, args_dict, prefix, encode_lib, preset_type, cr
         else cls_obj.videofile_duration - start_time
     # 判断参数的合法性
     # debug
-    for i in  (target_width, target_height, v_frame, target_videobitrate, target_audiobitrate, last_time):
-        print(i)
+    #for i in  (target_width, target_height, v_frame, target_videobitrate, target_audiobitrate, last_time):
+    #    print(i)
     # enddebug
     if any([i <= 0 for i in (target_width, target_height, v_frame, target_videobitrate,
                              target_audiobitrate, last_time)]) \

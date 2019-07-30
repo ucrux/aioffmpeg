@@ -46,7 +46,8 @@ def test_scale_video_cuda():
                                          target_videobitrate=random.randint(100, 400),
                                          encode_lib=H264EncoderArgs.codec_v_h264_nvenc,
                                          hwaccel=H264EncoderArgs.hwaccel_cuvid,
-                                         decoder=H264EncoderArgs.decoder_h264_cuvid)
+                                         decoder=H264EncoderArgs.decoder_h264_cuvid,
+                                         ac=H264EncoderArgs.audio_channel_1,ar=H264EncoderArgs.audio_simple_rate_48000)
     assert scaled_obj is not None and stderr == ''
     print('H264Video object info:', scaled_obj)
     print(f'out put video width:{scaled_obj.video_width:d},video height:{scaled_obj.video_height:d},'
