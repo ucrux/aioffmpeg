@@ -326,8 +326,7 @@ class H264Video:
         return True, ''
 
     def __init__(self, video_file: str, output_dir: str = '/tmp',
-                 ffmpeg_bin: str = '/opt/ffmpeg/bin/ffmpeg',
-                 ffprobe_bin: str = "/opt/ffmpeg/bin/ffprobe", aio=True, auto_clear=False):
+                 ffmpeg_bin: str = None, ffprobe_bin: str = None, aio=True, auto_clear=False):
         """
         初始化ffmpeg类,初始化的时候会判断各个文件是否存在,并且会获取视频文件的属性
         :param video_file: 视频文件
@@ -338,6 +337,16 @@ class H264Video:
         :param auto_clear: 是否自动清理源文件
         注意,本类仅支持linux
         """
+        if ffmpeg_bin is None:
+            status, stdout, _ = simple_run_cmd(r'which ffmpeg')
+            if status != 0:
+                raise FileNotFoundError('can not found ffmpeg bin')
+            ffmpeg_bin = stdout.replace('\n', '')
+        if ffprobe_bin is None:
+            status, stdout, stderr = simple_run_cmd(r'which ffprobe')
+            if status != 0:
+                raise FileNotFoundError('can not found ffprobe bin')
+            ffprobe_bin = stdout.replace('\n', '')
         # 获取各个文件的绝对路径
         video_file = os.path.abspath(video_file)
         ffmpeg_bin = os.path.abspath(ffmpeg_bin)
