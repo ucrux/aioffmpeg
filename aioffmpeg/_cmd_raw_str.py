@@ -6,7 +6,7 @@ aioffmpeg 需要支持 h264_nvenc 和 libx264 两个 encoder
 但是在实际使用中,发现 使用 libx264 encoder 会让视频文件莫名其妙变大
 """
 # 查看ffmpeg是否有外部编码库 h264_nvenc libx264
-CMD_CHECK_H264 = r"'{ffmpeg_bin:s}' -hide_banner -encoders |grep -v libx264rgb| grep -E 'libx264|h264_nvenc'"
+CMD_CHECK_H264 = r"'{ffmpeg_bin:s}' -hide_banner -encoders |grep -v libx264rgb| grep -E 'libx264|h264_nvenc|h264_qsv'"
 
 # 获取视频属性,在stdout中输出视频信息的属性
 CMD_GET_VIDEO_PROBE = r"'{ffprobe_bin:s}' -v quiet -print_format json -show_format -show_streams '{input_file:s}'"
