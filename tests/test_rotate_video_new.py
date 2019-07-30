@@ -23,7 +23,7 @@ async def test_rotate_video_aio():
                                                    rotate_direct=rotate_direct,
                                                    target_videobitrate=random.randint(100, 400),
                                                    hwaccel=H264EncoderArgs.hwaccel_cuda,
-                                                   decoder=H264EncoderArgs.decoder_h264_cuvid
+                                                   decoder=H264EncoderArgs.decoder_h264_cuvid,
                                                    encode_lib=H264EncoderArgs.codec_v_h264_nvenc)
     assert scaled_obj is not None and stderr == ''
     print('H264Video object info:', scaled_obj)
@@ -47,7 +47,7 @@ def test_rotate_video():
                                          rotate_direct=rotate_direct,
                                          target_videobitrate=random.randint(100, 400),
                                          hwaccel=H264EncoderArgs.hwaccel_cuda,
-                                         decoder=H264EncoderArgs.decoder_h264_cuvid
+                                         decoder=H264EncoderArgs.decoder_h264_cuvid,
                                          encode_lib=H264EncoderArgs.codec_v_libx264)
     assert scaled_obj is not None and stderr == ''
     print('H264Video object info:', scaled_obj)
