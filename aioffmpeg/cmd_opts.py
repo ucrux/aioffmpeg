@@ -209,7 +209,6 @@ class FfmpegCmdModel:
     cut_video = CMD_CUT_VIDEO
     cut_video_qsv = CMD_CUT_VIDEO_QSV
     concat_video = CMD_CONCAT_VIDEO
-    concat_video_qsv = CMD_CONCAT_VIDEO_QSV
     concat_video_safe = CMD_CONCAT_VIDEO_SAFE
     logo_video_fix = CMD_LOGO_FIX
     logo_video_move = CMD_LOGO_MOVE
