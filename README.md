@@ -97,6 +97,12 @@ m3u8path, stderr = h264_obj.cmd_do(f'{home_dir:s}', 'm3u8', FfmpegCmdModel.hls_v
                                    encode_lib=H264EncoderArgs.codec_v_libx264,
                                    ts_time=ts_time,
                                    ts_prefix='test-ts')
+# QSV
+m3u8path, stderr = await h264_obj.cmd_do_aio(f'{home_dir:s}', 'm3u8', FfmpegCmdModel.hls_video_qsv,
+                                             target_videobitrate=video_bitrate,
+                                             target_height=random.randint(100,300),
+                                             ts_time=ts_time,
+                                             ts_prefix='test-ts-aio')
 ```
 成功返回一个新的 m3u8文件的路径,和一个空字符串<br>
 失败返回 None, stderr
@@ -119,6 +125,12 @@ cuted_video, stderr = h264_obj.cmd_do(f'{home_dir:s}', 'mp4', FfmpegCmdModel.cut
 new_obj_list = h264_obj[0:20:10]
 # 仅支持非异步,截取一个从1面开始的一个1秒的视频
 new_obj = h246_obj[2]                                
+# QSV
+m3u8path, stderr = await h264_obj.cmd_do_aio(f'{home_dir:s}', 'm3u8', FfmpegCmdModel.hls_video_qsv,
+                                             target_videobitrate=video_bitrate,
+                                             target_height=random.randint(100,300),
+                                             ts_time=ts_time,
+                                             ts_prefix='test-ts-aio')
 ```
 成功返回一个新的 H264Video实例,和一个空字符串<br>
 失败返回 None, stderr
