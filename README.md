@@ -27,8 +27,6 @@ h264_obj = H264Video(video_file, output_dir, ffmpeg_bin,
 
 ## 缩放视频
 
-**视频缩放可以使用解码器 h264_cuvid, 但是不能和 -hwaccel cuvid 一起使用**
-
 **可用的参数组合**
 ```
 -hwaccel cuda -c:v h264_cuvid(decoder)
@@ -58,6 +56,18 @@ scaled_obj, stderr = h264_obj.cmd_do(f'{home_dir:}', 'mp4', FfmpegCmdModel.scale
 失败返回 None, stderr
 
 ## 旋转视频(左旋,右旋)
+
+
+**可用的参数组合**
+```
+-hwaccel cuda -c:v h264_cuvid(decoder)
+-hwaccel cuvid
+-hwaccel cuda
+-hwaccel cuda -c:v h264_cuvid(decoder) -c:v libx264(encoder)
+-hwaccel cuvid -c:v libx264(encoder)
+-hwaccel cuda -c:v libx264(encoder)
+```
+
 ```python
 # 异步
 scaled_obj, stderr = await h264_obj.cmd_do_aio(f'{home_dir:}', 'mp4', FfmpegCmdModel.rotate_video,
