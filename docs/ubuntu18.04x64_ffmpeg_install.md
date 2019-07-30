@@ -1,6 +1,7 @@
 参考: 
 - **https://docs.nvidia.com/cuda/index.html**
 - **https://developer.nvidia.com/video-encode-decode-gpu-support-matrix#Encoder**
+- **https://gist.github.com/Brainiarc7/4f831867f8e55d35cbcb527e15f9f116**
 
 安装CUDA
 ===
@@ -164,8 +165,207 @@ Result = PASS
 **输出为*PASS*即表示安装完成**
 
 
+安装QSV支持
+===
 
-使ffmpeg支持CUDA下的cuvid vnenc和NPP
+## 安装依赖
+
+### Install baseline dependencies first (inclusive of OpenCL headers+)
+
+```shell
+sudo apt-get -y install autoconf automake build-essential libass-dev libtool pkg-config \
+texinfo zlib1g-dev libva-dev cmake mercurial libdrm-dev libvorbis-dev libogg-dev git \
+libx11-dev libperl-dev libpciaccess-dev libpciaccess0 xorg-dev intel-gpu-tools \
+opencl-headers libwayland-dev xutils-dev ocl-icd-* libssl-dev
+```
+
+*Then add the Oibaf PPA, needed to install the latest development headers for libva:*
+
+```shell
+sudo add-apt-repository ppa:oibaf/graphics-drivers
+sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade
+```
+
+*Configure git:*
+
+> This will be needed by some projects below, such as when building opencl-clang. Use your credentials, as you see fit:
+
+```shelll
+git config --global user.name "FirstName LastName"
+git config --global user.email "your@email.com"
+```
+
+*To address linker problems down the line with Ubuntu 18.04LTS:*
+
+> maybe already be fixed
+
+```shell
+sudo ln -s /usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0 /usr/lib/x86_64-linux-gnu/libGLX_mesa.so
+```
+
+*make some dir*
+
+```shell
+mkdir ~/extapp/vaapi
+```
+
+## install libdrm
+
+```shell
+cd ~/extapp/vaapi && \
+git clone https://anongit.freedesktop.org/git/mesa/drm.git libdrm && \
+cd libdrm && \
+./autogen.sh --prefix=/usr --enable-udev && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install && \
+sudo ldconfig -vvvv
+```
+
+## install libva
+
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/01org/libva && \
+cd libva && \
+./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install && \
+sudo ldconfig -vvvv
+```
+
+## install gmmlib
+```shell
+mkdir -p ~/extapp/vaapi/workspace && \
+cd ~/extapp/vaapi/workspace && \
+git clone https://github.com/intel/gmmlib && \
+mkdir -p build && \
+cd build && \
+cmake -DCMAKE_BUILD_TYPE= Release ../gmmlib && \
+make -j$(nproc) && \
+sudo make -j$(nproc) install
+```
+
+## install intel media driver
+```shell
+cd ~/extapp/vaapi/workspace && \
+git clone https://github.com/intel/media-driver && \
+cd media-driver && \
+git submodule init && \
+git pull && \
+mkdir -p ~/extapp/vaapi/workspace/build_media && \
+cd ~/extapp/vaapi/workspace/build_media && \
+cmake ../media-driver \
+-DMEDIA_VERSION="2.0.0" \
+-DBS_DIR_GMMLIB=$PWD/../gmmlib/Source/GmmLib/ \
+-DBS_DIR_COMMON=$PWD/../gmmlib/Source/Common/ \
+-DBS_DIR_INC=$PWD/../gmmlib/Source/inc/ \
+-DBS_DIR_MEDIA=$PWD/../media-driver \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_INSTALL_LIBDIR=/usr/lib/x86_64-linux-gnu \
+-DINSTALL_DRIVER_SYSCONF=OFF \
+-DLIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install VERBOSE=1 && \
+sudo usermod -a -G video $USER
+```
+
+*Now, export environment variables as shown below:*
+```
+LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+LIBVA_DRIVER_NAME=iHD
+```
+*Put that in /etc/environment.*
+
+## install cmrt
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/01org/cmrt && \
+cd cmrt && \
+./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install
+```
+
+## install intel-hybrid-driver
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/01org/intel-hybrid-driver && \
+cd intel-hybrid-driver && \
+./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install
+```
+
+## install intel-vaapi-driver
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/01org/intel-vaapi-driver && \
+cd intel-vaapi-driver && \
+./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --enable-hybrid-codec && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install
+```
+
+## install libva-utils
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/intel/libva-utils && \
+cd libva-utils && \
+./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make -j$(nproc) install
+```
+
+**reboot: sudo systemctl reboot**
+
+## install Intel Neo OpenCL runtime
+```shell
+sudo add-apt-repository ppa:intel-opencl/intel-opencl
+sudo apt-get update
+sudo apt install intel-*
+```
+
+## Install the dependencies for the OpenCL back-end
+```shell
+sudo apt-get install ccache flex bison cmake g++ git patch zlib1g-dev \
+autoconf xutils-dev libtool pkg-config libpciaccess-dev libz-dev clinfo
+```
+
+> Use clinfo and confirm that the ICD is detected.
+
+
+## install Intel MSDK
+```shell
+cd ~/extapp/vaapi && \
+git clone https://github.com/Intel-Media-SDK/MediaSDK msdk && \
+cd msdk && \
+git submodule init && \
+git pull && \
+mkdir -p ~/extapp/vaapi/build_msdk && \
+cd ~/extapp/vaapi/build_msdk && \
+cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_WAYLAND=ON \
+-DENABLE_X11_DRI3=ON -DENABLE_OPENCL=ON  ../msdk && \
+time make -j$(nproc) VERBOSE=1 && \
+sudo make install -j$(nproc) VERBOSE=1
+```
+
+**Create a library config file for the iMSDK:**
+
+```shell
+sudo vi /etc/ld.so.conf.d/imsdk.conf
+
+#Content:
+
+/opt/intel/mediasdk/lib
+/opt/intel/mediasdk/plugins
+
+sudo ldconfig -vvvv
+```
+
+**reboot: sudo systemctl reboot**
+
+
+使ffmpeg支持CUDA下的cuvid vnenc NPP QSV
 ===
 
 ## 安装依赖
@@ -446,7 +646,7 @@ cd ${HOME}/extapp/ffmpeg/ffmpeg_source && \
 wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 && \
 tar xjvf ffmpeg-snapshot.tar.bz2 && \
 cd ffmpeg && \
-PKG_CONFIG_PATH="${HOME}/extapp/ffmpeg/ffmpeg_build/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" \
+PKG_CONFIG_PATH="${HOME}/extapp/ffmpeg/ffmpeg_build/lib/pkgconfig:/opt/intel/mediasdk/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" \
 PATH="${HOME}/extapp/ffmpeg/bin:$PATH" \
 ./configure \
   --prefix="${HOME}/extapp/ffmpeg/ffmpeg_build" \
@@ -455,9 +655,18 @@ PATH="${HOME}/extapp/ffmpeg/bin:$PATH" \
   --extra-ldflags="-L${HOME}/extapp/ffmpeg/ffmpeg_build/lib" \
   --extra-cflags="-I/usr/local/cuda/include" \
   --extra-ldflags="-L/usr/local/cuda/lib64" \
-  --extra-libs=-lpthread \
-  --extra-libs=-lm \
+  --extra-cflags="-I/opt/intel/mediasdk/include" \
+  --extra-ldflags="-L/opt/intel/mediasdk/lib" \
+  --extra-ldflags="-L/opt/intel/mediasdk/plugins" \
+  --extra-libs="-lpthread -lm -lz -ldl" \
   --bindir="${HOME}/extapp/ffmpeg/bin" \
+  --enable-libmfx \
+  --enable-vaapi \
+  --enable-opencl \
+  --enable-libdrm \
+  --enable-runtime-cpudetect \
+  --enable-openssl \
+  --enable-pic \
   --enable-gpl \
   --enable-libass \
   --enable-libfdk_aac \
@@ -469,6 +678,7 @@ PATH="${HOME}/extapp/ffmpeg/bin:$PATH" \
   --enable-libx264 \
   --enable-libx265 \
   --enable-nonfree \
+  --disable-debug \
   --disable-shared \
   --enable-nvenc \
   --enable-cuda \
@@ -483,43 +693,12 @@ make install && \
 hash -r
 ```
 
-
-### 编译ffmpeg
-```shell
-cd /data/ffmpeg/ffmpeg_sources/ffmpeg
-
-PATH="/data/ffmpeg/bin:$PATH" PKG_CONFIG_PATH="/data/ffmpeg/ffmpeg_build/lib/pkgconfig:$PKG_CONFIG_PATH" \
-./configure \
---prefix="/data/ffmpeg/ffmpeg_build" \
---pkg-config-flags="--static" \
---extra-cflags="-I/data/ffmpeg/ffmpeg_build/include" \
---extra-ldflags="-L/data/ffmpeg/ffmpeg_build/lib" \
---bindir="/data/ffmpeg/bin" \
---enable-gpl \
---enable-libass \
---enable-libfdk-aac \
---enable-libfreetype \
---enable-libmp3lame \
---enable-libopus \
---enable-libtheora \
---enable-libvorbis \
---enable-libvpx \
---enable-libx264 \
---enable-nonfree \
---extra-cflags="-I/usr/local/cuda/include/" \
---extra-ldflags=-L/usr/local/cuda/lib64 \
---disable-shared \
---enable-nvenc \
---enable-cuda \
---enable-cuvid \
---enable-libnpp
-
-PATH="/data/ffmpeg/bin:$PATH" PKG_CONFIG_PATH="/data/ffmpeg/ffmpeg_build/lib/pkgconfig:$PKG_CONFIG_PATH" \
-make -j8
-
-make -j$(nproc) install
-make -j$(nproc) distclean
-hash -r
+**这几个QSV要使用的**
+```
+  --enable-libmfx \
+  --enable-vaapi \
+  --enable-opencl \
+  --enable-libdrm \
 ```
 
 ### 验证
@@ -533,6 +712,24 @@ hash -r
  V..... nvenc_h264           NVIDIA NVENC H.264 encoder (codec h264)
  V..... nvenc_hevc           NVIDIA NVENC hevc encoder (codec hevc)
  V..... hevc_nvenc           NVIDIA NVENC hevc encoder (codec hevc)
+
+
+ffmpeg  -hide_banner -encoders | grep vaapi
+
+ V..... h264_vaapi           H.264/AVC (VAAPI) (codec h264)
+ V..... hevc_vaapi           H.265/HEVC (VAAPI) (codec hevc)
+ V..... mjpeg_vaapi          MJPEG (VAAPI) (codec mjpeg)
+ V..... mpeg2_vaapi          MPEG-2 (VAAPI) (codec mpeg2video)
+ V..... vp8_vaapi            VP8 (VAAPI) (codec vp8)
+ V..... vp9_vaapi            VP9 (VAAPI) (codec vp9)
+
+ffmpeg  -hide_banner -encoders | grep qsv
+
+ V..... h264_qsv             H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (Intel Quick Sync Video acceleration) (codec h264)
+ V..... hevc_qsv             HEVC (Intel Quick Sync Video acceleration) (codec hevc)
+ V..... mjpeg_qsv            MJPEG (Intel Quick Sync Video acceleration) (codec mjpeg)
+ V..... mpeg2_qsv            MPEG-2 video (Intel Quick Sync Video acceleration) (codec mpeg2video)
+
 ```
 
 #### 转码测试
