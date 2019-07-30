@@ -605,7 +605,7 @@ async def _create_command_aio(cls_obj, output_file: str, prefix: str,
         if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
             return None, None
     # 拼接视频的特殊处理
-    if cmd_model == FfmpegCmdModel.concat_video:
+    if cmd_model == FfmpegCmdModel.concat_video or FfmpegCmdModel.concat_video_qsv:
         if input_obj is None or not hasattr(input_obj, 'aio'):
             return None, None
         if not all([i for i in (cls_obj.aio, input_obj.aio)]):
@@ -778,7 +778,7 @@ def _create_command(cls_obj, output_file: str, prefix: str,
         if not cls_obj.h264_qsv or cls_obj.video_codecname != r'h264':
             return None, None
     # 拼接视频的特殊处理
-    if cmd_model == FfmpegCmdModel.concat_video:
+    if cmd_model == FfmpegCmdModel.concat_video or cmd_model == FfmpegCmdModel.concat_video_qsv:
         if input_obj is None:
             return None, None
         args_dict = _cmd_tools_concate_vide(cls_obj, args_dict, input_obj, args_dict['video_rate'], args_dict['frame'])

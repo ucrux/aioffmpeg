@@ -345,6 +345,12 @@ CMD_CONCAT_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file1:s}' -i '{
                    r"-filter_complex '[0:0] [0:1] [1:0] [1:1] concat=n=2:v=1:a=1 [v] [a]' -map '[v]' -map '[a]' " \
                    r"-g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                    r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
+CMD_CONCAT_VIDEO_QSV = r"'{ffmpeg_bin:s}' -noautorotate -init_hw_device qsv=qsv:hw -filter_hw_device qsv -hwaccel qsv -c:v h264_qsv " \
+                       r"-hide_banner -y -i '{input_file1:s}' -i '{input_file2:s}' " \
+                       r"-threads 0 -c:v h264_qsv -c:a aac -b:a {audio_rate:d}k -f mp4 -movflags +faststart " \
+                       r"-filter_complex '[0:0] [0:1] [1:0] [1:1] concat=n=2:v=1:a=1 [v] [a]' -map '[v]' -map '[a]' " \
+                       r"-g {frame:d} -r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
+                       r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'"
 
 CMD_CONCAT_VIDEO_SAFE = r"'{ffmpeg_bin:s}' -f concat -safe 0 -i '{concat_file:s}' -c copy '{output_file:s}'"
 # 水印命令
