@@ -31,7 +31,9 @@ h264_obj = H264Video(video_file, output_dir, ffmpeg_bin,
 
 **可用的参数组合**
 ```
--hwaccle cuda -c:v h264_cuvid
+-hwaccel cuda -c:v h264_cuvid(decoder)
+-hwaccel cuvid
+-hwaccel cuda
 ```
 
 

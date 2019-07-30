@@ -21,9 +21,9 @@ async def test_scale_video_cuda_aio():
                                                    target_width=random.randint(700, 1000),
                                                    target_height=random.randint(300, 1000),
                                                    target_videobitrate=random.randint(100, 400),
-                                                   encode_lib=H264EncoderArgs.codec_v_h264_nvenc,
+                                                   encode_lib=H264EncoderArgs.codec_v_libx264,
                                                    hwaccel=H264EncoderArgs.hwaccel_cuda,
-                                                   #decoder=H264EncoderArgs.decoder_h264_cuvid)
+                                                   decoder=H264EncoderArgs.decoder_h264_cuvid)
                                                    )
     assert scaled_obj is not None and stderr == ''
     print('H264Video object info:', scaled_obj)
@@ -45,7 +45,8 @@ def test_scale_video_cuda():
                                          target_width=random.randint(700, 1000),
                                          target_height=random.randint(300, 1000),
                                          target_videobitrate=random.randint(100, 400),
-                                         encode_lib=H264EncoderArgs.codec_v_h264_nvenc,
+                                         #encode_lib=H264EncoderArgs.codec_v_h264_nvenc,
+                                         encode_lib=H264EncoderArgs.codec_v_libx264,
                                          hwaccel=H264EncoderArgs.hwaccel_cuvid,
                                          #decoder=H264EncoderArgs.decoder_h264_cuvid,
                                          ac=H264EncoderArgs.audio_channel_1,ar=H264EncoderArgs.audio_simple_rate_48000)
