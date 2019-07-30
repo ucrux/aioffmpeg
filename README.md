@@ -26,6 +26,15 @@ h264_obj = H264Video(video_file, output_dir, ffmpeg_bin,
 如果初始化使用 auto_clear=True,则对象析构时会自动删除视频源文件
 
 ## 缩放视频
+
+**视频缩放可以使用解码器 h264_cuvid, 但是不能和 -hwaccel cuvid 一起使用**
+
+**可用的参数组合**
+```
+-hwaccle cuda -c:v h264_cuvid
+```
+
+
 ```python
 # 异步
 scaled_obj, stderr = await h264_obj.cmd_do_aio(f'{home_dir:}', 'mp4', FfmpegCmdModel.scale_video,
