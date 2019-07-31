@@ -10,7 +10,7 @@ def simple_run_cmd(cmd, timeout: int = 7200) -> 'status,stdout,stderr':
     :return:
     """
     # debug
-    print(cmd)
+    # print(cmd)
     # end debug
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
@@ -39,7 +39,7 @@ async def run_cmd(cmd: str) -> 'status,stdout,stderr':
     :return: status,stdout,stderr
     """
     # debug
-    print(cmd)
+    # print(cmd)
     # end debug
     proc = await asyncio.create_subprocess_shell(
         cmd,
