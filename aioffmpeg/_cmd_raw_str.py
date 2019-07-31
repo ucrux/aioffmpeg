@@ -219,6 +219,12 @@ CMD_SCALE_VIDEO_CODECS = r"'{ffmpeg_bin:s}' {hwaccel} {hwaccel_device} {is_autor
                          r'-vf "format=yuv420p,scale={target_width:d}:{target_height:d}{pad_options:s}{ass_options:s}" ' \
                          r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
                          r"-level {level:s} -g {frame:d} -b:v {video_rate:d}k '{output_file:s}'"
+# QSV 视频缩放,仅支持视频缩放,不支持视频填充
+CMD_SCALE_VIDEO_QSV = r"'{ffmpeg_bin:s}' -noautorotate -init_hw_device qsv=qsv:hw -filter_hw_device qsv -hwaccel qsv -c:v h264_qsv " \
+                      r"-hide_banner -y -i '{input_file:s}' -threads 0 -c:v h264_qsv -c:a aac {ar} {ac} -b:a {audio_rate:d}k " \
+                      r"-f mp4 -movflags +faststart -vf 'scale_qsv=-1:{target_height:d}' -g {frame:d} " \
+                      r"-r {frame:d} -preset {preset_type:s} -crf {crf_num:d} -profile:v {profile_type:s} " \
+                      r"-level {level:s} -b:v {video_rate:d}k '{output_file:s}'" \
 # 视频旋转命令,支持视频的左旋和右旋
 CMD_ROTATE_VIDEO = r"'{ffmpeg_bin:s}' {hwaccel} {hwaccel_device} {is_autorotate} {decoder} " \
                    r"-hide_banner -y -i '{input_file:s}' -threads 0 " \

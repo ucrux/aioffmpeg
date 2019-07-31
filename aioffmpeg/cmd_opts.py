@@ -201,6 +201,7 @@ class FfmpegCmdModel:
     get_video_probe = CMD_GET_VIDEO_PROBE
     ch_video_metadata = CMD_CH_VIDEO_METADATA
     scale_video = CMD_SCALE_VIDEO_CODECS
+    scale_video_qsv = CMD_SCALE_VIDEO_QSV
     rotate_video = CMD_ROTATE_VIDEO
     hls_video = CMD_HLS_VIDEO
     hls_video_other = CMD_HLS_VIDEO_OTHER
