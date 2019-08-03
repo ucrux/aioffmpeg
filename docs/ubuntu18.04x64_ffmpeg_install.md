@@ -3,168 +3,6 @@
 - **https://developer.nvidia.com/video-encode-decode-gpu-support-matrix#Encoder**
 - **https://gist.github.com/Brainiarc7/4f831867f8e55d35cbcb527e15f9f116**
 
-安装CUDA
-===
-
-## 安装前准备
-
-### 禁用开源显卡驱动
-```shell
-cat /etc/modprobe.d/blacklist-nouveau.conf
-blacklist nouveau
-options nouveau modeset=0
-
-# 重新生成内核
-sudo update-initramfs -u
-
-# 重启
-sudo init 6
-```
-
-### 验证显卡
-```shell
-lspci | grep -i nvidia
-
-01:00.0 VGA compatible controller: NVIDIA Corporation Device 1c03 (rev a1)
-01:00.1 Audio device: NVIDIA Corporation Device 10f1 (rev a1)
-```
-
-### 查看lunix系统信息
-```shell
-uname -m && cat /etc/*release
-
-x86_64
-DISTRIB_ID=Ubuntu
-DISTRIB_RELEASE=16.04
-DISTRIB_CODENAME=xenial
-DISTRIB_DESCRIPTION="Ubuntu 16.04.5 LTS"
-NAME="Ubuntu"
-VERSION="16.04.5 LTS (Xenial Xerus)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 16.04.5 LTS"
-VERSION_ID="16.04"
-HOME_URL="http://www.ubuntu.com/"
-SUPPORT_URL="http://help.ubuntu.com/"
-BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
-VERSION_CODENAME=xenial
-UBUNTU_CODENAME=xenial
-```
-
-### 安装相关包
-```shell
-sudo apt-get install gcc g++ linux-headers-$(uname -r) dkms build-essential -y
-```
-
-## 下载并安装CUDA
-
-### 下载
-```shell
-# 软件包
-wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
-```
-
-### 安装(实际为源)
-```shell
-sudo dpkg -i cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
-```
-
-### 信任安装源证书
-```
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
-```
-
-### 安装软件
-
-*实际上是建立一个本地源*
-
-```shell
-sudo apt-get update
-sudo apt-get install cuda
-```
-
-## 添加环境变量
-```shell
-export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-```
-
-## 验证安装
-
-**验证前要重启服务器**
-
-### 查看驱动信息
-```shell
-sudo ldconfig
-cat /proc/driver/nvidia/version
-
-NVRM version: NVIDIA UNIX x86_64 Kernel Module  396.37  Tue Jun 12 13:47:27 PDT 2018
-GCC version:  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.10)
-```
-### 使用官方实例进行编译
-```shell
-# 下载官方试例(环境变量配置正确的情况下,可以这样使用)
-cuda-install-samples-10.1.sh  ~
-
-# 进入示例代码目录
-cd ~/NVIDIA_CUDA-10.1_Samples/
-
-# 编译示例代码
-make -j8
-
-# 运行示例程序
-cd bin/x86_64/linux/release/
-./deviceQuery
-
-./deviceQuery Starting...
-
- CUDA Device Query (Runtime API) version (CUDART static linking)
-
-Detected 1 CUDA Capable device(s)
-
-Device 0: "GeForce GTX 1060 6GB"
-  CUDA Driver Version / Runtime Version          9.2 / 9.2
-  CUDA Capability Major/Minor version number:    6.1
-  Total amount of global memory:                 6077 MBytes (6372196352 bytes)
-  (10) Multiprocessors, (128) CUDA Cores/MP:     1280 CUDA Cores
-  GPU Max Clock rate:                            1785 MHz (1.78 GHz)
-  Memory Clock rate:                             4004 Mhz
-  Memory Bus Width:                              192-bit
-  L2 Cache Size:                                 1572864 bytes
-  Maximum Texture Dimension Size (x,y,z)         1D=(131072), 2D=(131072, 65536), 3D=(16384, 16384, 16384)
-  Maximum Layered 1D Texture Size, (num) layers  1D=(32768), 2048 layers
-  Maximum Layered 2D Texture Size, (num) layers  2D=(32768, 32768), 2048 layers
-  Total amount of constant memory:               65536 bytes
-  Total amount of shared memory per block:       49152 bytes
-  Total number of registers available per block: 65536
-  Warp size:                                     32
-  Maximum number of threads per multiprocessor:  2048
-  Maximum number of threads per block:           1024
-  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)
-  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)
-  Maximum memory pitch:                          2147483647 bytes
-  Texture alignment:                             512 bytes
-  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)
-  Run time limit on kernels:                     No
-  Integrated GPU sharing Host Memory:            No
-  Support host page-locked memory mapping:       Yes
-  Alignment requirement for Surfaces:            Yes
-  Device has ECC support:                        Disabled
-  Device supports Unified Addressing (UVA):      Yes
-  Device supports Compute Preemption:            Yes
-  Supports Cooperative Kernel Launch:            Yes
-  Supports MultiDevice Co-op Kernel Launch:      Yes
-  Device PCI Domain ID / Bus ID / location ID:   0 / 1 / 0
-  Compute Mode:
-     < Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) >
-
-deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 9.2, CUDA Runtime Version = 9.2, NumDevs = 1
-Result = PASS
-```
-
-**输出为*PASS*即表示安装完成**
-
-
 安装QSV支持
 ===
 
@@ -363,6 +201,168 @@ sudo ldconfig -vvvv
 ```
 
 **reboot: sudo systemctl reboot**
+
+
+安装CUDA
+===
+
+## 安装前准备
+
+### 禁用开源显卡驱动
+```shell
+cat /etc/modprobe.d/blacklist-nouveau.conf
+blacklist nouveau
+options nouveau modeset=0
+
+# 重新生成内核
+sudo update-initramfs -u
+
+# 重启
+sudo init 6
+```
+
+### 验证显卡
+```shell
+lspci | grep -i nvidia
+
+01:00.0 VGA compatible controller: NVIDIA Corporation Device 1c03 (rev a1)
+01:00.1 Audio device: NVIDIA Corporation Device 10f1 (rev a1)
+```
+
+### 查看lunix系统信息
+```shell
+uname -m && cat /etc/*release
+
+x86_64
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.5 LTS"
+NAME="Ubuntu"
+VERSION="16.04.5 LTS (Xenial Xerus)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 16.04.5 LTS"
+VERSION_ID="16.04"
+HOME_URL="http://www.ubuntu.com/"
+SUPPORT_URL="http://help.ubuntu.com/"
+BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
+VERSION_CODENAME=xenial
+UBUNTU_CODENAME=xenial
+```
+
+### 安装相关包
+```shell
+sudo apt-get install gcc g++ linux-headers-$(uname -r) dkms build-essential -y
+```
+
+## 下载并安装CUDA
+
+### 下载
+```shell
+# 软件包
+wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
+```
+
+### 安装(实际为源)
+```shell
+sudo dpkg -i cuda-repo-ubuntu1804_10.1.168-1_amd64.deb
+```
+
+### 信任安装源证书
+```
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+```
+
+### 安装软件
+
+*实际上是建立一个本地源*
+
+```shell
+sudo apt-get update
+sudo apt-get install cuda
+```
+
+## 添加环境变量
+```shell
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+```
+
+## 验证安装
+
+**验证前要重启服务器**
+
+### 查看驱动信息
+```shell
+sudo ldconfig
+cat /proc/driver/nvidia/version
+
+NVRM version: NVIDIA UNIX x86_64 Kernel Module  396.37  Tue Jun 12 13:47:27 PDT 2018
+GCC version:  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.10)
+```
+### 使用官方实例进行编译
+```shell
+# 下载官方试例(环境变量配置正确的情况下,可以这样使用)
+cuda-install-samples-10.1.sh  ~
+
+# 进入示例代码目录
+cd ~/NVIDIA_CUDA-10.1_Samples/
+
+# 编译示例代码
+make -j8
+
+# 运行示例程序
+cd bin/x86_64/linux/release/
+./deviceQuery
+
+./deviceQuery Starting...
+
+ CUDA Device Query (Runtime API) version (CUDART static linking)
+
+Detected 1 CUDA Capable device(s)
+
+Device 0: "GeForce GTX 1060 6GB"
+  CUDA Driver Version / Runtime Version          9.2 / 9.2
+  CUDA Capability Major/Minor version number:    6.1
+  Total amount of global memory:                 6077 MBytes (6372196352 bytes)
+  (10) Multiprocessors, (128) CUDA Cores/MP:     1280 CUDA Cores
+  GPU Max Clock rate:                            1785 MHz (1.78 GHz)
+  Memory Clock rate:                             4004 Mhz
+  Memory Bus Width:                              192-bit
+  L2 Cache Size:                                 1572864 bytes
+  Maximum Texture Dimension Size (x,y,z)         1D=(131072), 2D=(131072, 65536), 3D=(16384, 16384, 16384)
+  Maximum Layered 1D Texture Size, (num) layers  1D=(32768), 2048 layers
+  Maximum Layered 2D Texture Size, (num) layers  2D=(32768, 32768), 2048 layers
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       49152 bytes
+  Total number of registers available per block: 65536
+  Warp size:                                     32
+  Maximum number of threads per multiprocessor:  2048
+  Maximum number of threads per block:           1024
+  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)
+  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)
+  Maximum memory pitch:                          2147483647 bytes
+  Texture alignment:                             512 bytes
+  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)
+  Run time limit on kernels:                     No
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Disabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device supports Compute Preemption:            Yes
+  Supports Cooperative Kernel Launch:            Yes
+  Supports MultiDevice Co-op Kernel Launch:      Yes
+  Device PCI Domain ID / Bus ID / location ID:   0 / 1 / 0
+  Compute Mode:
+     < Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) >
+
+deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 9.2, CUDA Runtime Version = 9.2, NumDevs = 1
+Result = PASS
+```
+
+**输出为*PASS*即表示安装完成**
 
 
 使ffmpeg支持CUDA下的cuvid vnenc NPP QSV
