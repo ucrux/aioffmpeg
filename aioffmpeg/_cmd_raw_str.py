@@ -253,7 +253,7 @@ CMD_HLS_VIDEO = r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 
                 r"second_level_segment_size+second_level_segment_index+second_level_segment_duration " \
                 r"-strftime 1 " \
                 r'-hls_segment_filename "{prefix:s}-%%013t-%%08s-%%010d.ts" ' \
-                r"/dev/null && " \
+                r"{prefix:s}.m3u8 && " \
                 r"'{ffmpeg_bin:s}' -hide_banner -y -i '{input_file:s}' -threads 0 " \
                 r"-c:v {encode_lib:s} -c:a aac -b:a {audio_rate:d}k -pass 2 " \
                 r"-f hls -movflags +faststart -passlogfile {prefix:s} " \
