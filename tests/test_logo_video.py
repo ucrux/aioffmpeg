@@ -13,7 +13,7 @@ async def test_logo_video_aio():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     ratio_img_height = 0.981555
@@ -47,14 +47,13 @@ async def test_logo_video_aio():
     print(f'out put video width:{fix_video_move.video_width:d},video height:{fix_video_move.video_height:d},'
           f'video bit rate:{fix_video_move.video_bitrate:d}')
 
-'''
 def test_logo_video():
     """
     测试视频缩放
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     ratio_img_height = random.random()
@@ -84,4 +83,3 @@ def test_logo_video():
     print('H264Video object info:', fix_video_move)
     print(f'out put video width:{fix_video_move.video_width:d},video height:{fix_video_move.video_height:d},'
           f'video bit rate:{fix_video_move.video_bitrate:d}')
-'''

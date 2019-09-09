@@ -20,7 +20,7 @@ def test_init_del():
                 os.path.isfile(constval.VIDEO_DUMMY),
                 os.path.isfile(constval.FFMPEG_BIN_DUMMY),
                 os.path.isfile(constval.FFPROBE_BIN_DUMMY)))
-    h264video_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264video_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     assert any((h264video_obj.libx264, h264video_obj.h264_nvenc))
     attr_list = ['libx264', 'h264_nvenc', 'output_dir', 'video_codecname', 'video_profile', 'video_width',
                  'video_height', 'video_pixfmt', 'video_avgframerate', 'video_bitrate', 'audio_codecname',
@@ -28,18 +28,3 @@ def test_init_del():
                  'videofile_path', 'videofile_duration', 'videofile_size', 'videofile_formatname']
     assert all([hasattr(h264video_obj, attr) for attr in attr_list])
     del h264video_obj
-    # 下面进行初始化异常测试
-    # 视频文件异常
-    with pytest.raises(ChildProcessError):
-        H264Video(constval.VIDEO_DUMMY, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN)
-    # FFMPEG_BIN 异常
-    with pytest.raises(ChildProcessError):
-        H264Video(constval.VIDEO_DUMMY, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN)
-    # FFPROBE_BIN 异常
-    with pytest.raises(ChildProcessError):
-        H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN_DUMMY)
-    with pytest.raises(FileNotFoundError):
-        H264Video(constval.VIDEO_NOT_EXIST, constval.OUTPUT_DIR, constval.FFMPEG_BIN_NOT_EXIST,
-                  constval.FFPROBE_BIN_NOT_EXIST)
-    with pytest.raises(FileNotFoundError):
-        H264Video(constval.VIDEO, constval.OUTPUT_DIR_NOT_EXIST, constval.FFMPEG_BIN, constval.FFPROBE_BIN)

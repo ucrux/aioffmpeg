@@ -13,7 +13,7 @@ async def test_hls_video_aio():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     home_dir = os.getenv('HOME')
     video_bitrate = random.randint(100, 400)
     ts_time = random.randint(5,15)
@@ -35,7 +35,7 @@ def test_hls_video():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, False)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=False)
     home_dir = os.getenv('HOME')
     assert not hasattr(h264_obj, 'cmd_do_aio')
     video_bitrate = random.randint(100, 400)

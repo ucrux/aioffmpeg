@@ -13,7 +13,7 @@ async def test_create_gif_aio():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     start_time = random.random() * 100
     last_time = random.randint(int(start_time)+1, int(start_time)+50)
     target_height = random.randint(100, 720)
@@ -38,7 +38,7 @@ def test_create_gif():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     start_time = random.random() * 100
     last_time = random.randint(int(start_time)+1, int(start_time)+50)
     target_height = random.randint(100, 720)

@@ -14,7 +14,7 @@ async def test_delog_video_aio():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     delog_args = tuple([
@@ -40,7 +40,7 @@ def test_delog_video():
     :return:
     """
     print('')
-    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, constval.FFMPEG_BIN, constval.FFPROBE_BIN, True)
+    h264_obj = H264Video(constval.VIDEO, constval.OUTPUT_DIR, aio=True)
     print('current work dir', os.path.abspath(os.getcwd()))
     home_dir = os.path.abspath(os.getenv('HOME'))
     delog_args = tuple([
